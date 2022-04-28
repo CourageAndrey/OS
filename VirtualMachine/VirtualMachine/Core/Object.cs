@@ -15,15 +15,7 @@ namespace VirtualMachine.Core
 		internal Object(Class @class)
 		{
 			_class = @class;
-
-			while (@class != null)
-			{
-				foreach (var field in _class.Fields)
-				{
-					FieldValues[field] = field.OfClass.DefaultValue;
-				}
-				@class = @class.Ancestor;
-			}
+			_class.InitializeFieldValues(FieldValues);
 		}
 
 		public Object()

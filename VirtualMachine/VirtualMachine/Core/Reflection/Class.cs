@@ -287,5 +287,18 @@ namespace VirtualMachine.Core.Reflection
 		}
 
 		public static readonly String NamespaceSeparator = new String(".");
+
+		internal void InitializeFieldValues(System.Collections.Generic.Dictionary<Field, Object> fieldValues)
+		{
+			if (_ancestor != null)
+			{
+				_ancestor.InitializeFieldValues(fieldValues);
+			}
+
+			foreach (var field in _fields)
+			{
+				FieldValues[field] = field.OfClass.DefaultValue;
+			}
+		}
 	}
 }
