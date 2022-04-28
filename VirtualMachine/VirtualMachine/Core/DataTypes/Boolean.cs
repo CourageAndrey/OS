@@ -1,4 +1,6 @@
-﻿namespace VirtualMachine.Core
+﻿using VirtualMachine.Core.Reflection;
+
+namespace VirtualMachine.Core.DataTypes
 {
 	public class Boolean : Object
 	{

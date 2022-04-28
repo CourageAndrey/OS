@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 
+using VirtualMachine.Core.DataTypes;
+using VirtualMachine.Core.Reflection;
+
 namespace VirtualMachine.Core
 {
 	public abstract class Collection : Object

@@ -63,19 +63,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Core\Boolean.cs" />
-    <Compile Include="Core\Class.cs" />
-    <Compile Include="Core\ClassMember.cs" />
-    <Compile Include="Core\Constructor.cs" />
+    <Compile Include="Core\DataTypes\Boolean.cs" />
+    <Compile Include="Core\Reflection\Class.cs" />
+    <Compile Include="Core\Reflection\ClassMember.cs" />
+    <Compile Include="Core\Reflection\Constructor.cs" />
     <Compile Include="Core\Exception.cs" />
-    <Compile Include="Core\Event.cs" />
-    <Compile Include="Core\Field.cs" />
-    <Compile Include="Core\Integer.cs" />
-    <Compile Include="Core\Method.cs" />
+    <Compile Include="Core\Reflection\Event.cs" />
+    <Compile Include="Core\Reflection\Field.cs" />
+    <Compile Include="Core\DataTypes\Integer.cs" />
+    <Compile Include="Core\Reflection\Method.cs" />
     <Compile Include="Core\Object.cs" />
-    <Compile Include="Core\Property.cs" />
+    <Compile Include="Core\Reflection\Property.cs" />
     <Compile Include="Core\Collection.cs" />
-    <Compile Include="Core\String.cs" />
+    <Compile Include="Core\DataTypes\String.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -104,6 +104,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
