@@ -1,4 +1,7 @@
-﻿namespace VirtualMachine.Core
+﻿using VirtualMachine.Core.DataTypes;
+using VirtualMachine.Core.Reflection;
+
+namespace VirtualMachine.Core
 {
 	public class Exception : Object
 	{

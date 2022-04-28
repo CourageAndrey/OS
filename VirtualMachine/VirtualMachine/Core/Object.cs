@@ -1,4 +1,7 @@
-﻿namespace VirtualMachine.Core
+﻿using VirtualMachine.Core.DataTypes;
+using VirtualMachine.Core.Reflection;
+
+namespace VirtualMachine.Core
 {
 	public class Object
 	{
@@ -7,8 +10,7 @@
 
 		private readonly Class _class;
 
-		internal readonly System.Collections.Generic.Dictionary<Field, Object> FieldValues =
-			new System.Collections.Generic.Dictionary<Field, Object>(); 
+		internal readonly System.Collections.Generic.Dictionary<Field, Object> FieldValues = new System.Collections.Generic.Dictionary<Field, Object>();
 
 		internal Object(Class @class)
 		{
@@ -28,7 +30,7 @@
 			: this(Class.ObjectClass)
 		{ }
 
-		public virtual new String ToString()
+		public new virtual String ToString()
 		{
 			return Class.FullName;
 		}

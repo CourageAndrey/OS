@@ -1,4 +1,6 @@
-﻿namespace VirtualMachine.Core
+﻿using VirtualMachine.Core.DataTypes;
+
+namespace VirtualMachine.Core.Reflection
 {
 	public class Property : ClassMember
 	{

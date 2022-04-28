@@ -1,4 +1,6 @@
-﻿namespace VirtualMachine
+﻿using VirtualMachine.Core.DataTypes;
+
+namespace VirtualMachine
 {
 	public partial class MainWindow
 	{
@@ -6,7 +8,7 @@
 		{
 			InitializeComponent();
 
-			Content = new Core.String("Hello, world!").DebugValue;
+			Content = new String("Hello, world!").DebugValue;
 		}
 	}
 }
