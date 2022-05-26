@@ -7,10 +7,13 @@ namespace VirtualMachine.Core
 		#region Properties
 
 		public DataType BaseType
-		{ get; internal set; }
+		{
+			get { return (DataType) _data[ObjectDataType.Fields.Count + 0]; }
+			internal set { _data[ObjectDataType.Fields.Count + 0] = value; }
+		}
 
 		public System.Collections.Generic.ICollection<DataTypeField> Fields
-		{ get; }
+		{ get; } = new System.Collections.Generic.List<DataTypeField>();
 
 		public System.Collections.Generic.ICollection<DataTypeMethod> Methods
 		{ get; } = new System.Collections.Generic.List<DataTypeMethod>();
@@ -28,18 +31,20 @@ namespace VirtualMachine.Core
 
 		#region Conctructors
 
-		internal DataType(DataType baseType, System.Collections.Generic.ICollection<DataTypeField> fields)
-			: base(DataTypeDataType)
+		public static DataType Create(DataType baseType)
 		{
-			BaseType = baseType;
-			Fields = fields;
+			var result = Create<DataType>(DataTypeDataType);
+			result.BaseType = baseType;
+			return result;
 		}
 
 		#endregion
 
 		#region Metadata
 
-		public static readonly DataType DataTypeDataType = new DataType(ObjectDataType, new DataTypeField[0]);
+		public static readonly DataType DataTypeDataType = new DataType();
+
+		internal static DataTypeField FieldBaseType;
 
 		#endregion
 
