@@ -1,32 +1,25 @@
-﻿using VirtualMachine.Core.DataTypes;
-using VirtualMachine.Core.Reflection;
-
-namespace VirtualMachine.Core
+﻿namespace VirtualMachine.Core
 {
 	public class Object
 	{
-		public Class Class
-		{ get { return _class; } }
+		#region Properties
 
-		private readonly Class _class;
+		public DataType DataType
+		{ get; }
 
-		internal readonly System.Collections.Generic.Dictionary<Field, Object> FieldValues = new System.Collections.Generic.Dictionary<Field, Object>();
+		#endregion
 
-		internal Object(Class @class)
+		#region Conctructors
+
+		protected Object(DataType dataType)
 		{
-			_class = @class;
-			_class.InitializeFieldValues(FieldValues);
+			DataType = dataType;
 		}
 
 		public Object()
-			: this(Class.ObjectClass)
+			: this(DataType.ObjectDataType)
 		{ }
 
-		public new virtual String ToString()
-		{
-			return Class.FullName;
-		}
-
-		public static readonly Object Null = new Object();
+		#endregion
 	}
 }
