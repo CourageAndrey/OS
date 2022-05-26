@@ -63,6 +63,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Reflection\DataTypeConstructor.cs" />
+    <Compile Include="Reflection\DataTypeEvent.cs" />
+    <Compile Include="Reflection\DataTypeField.cs" />
+    <Compile Include="Reflection\DataTypeMember.cs" />
+    <Compile Include="Reflection\DataTypeMethod.cs" />
+    <Compile Include="Reflection\DataTypeProperty.cs" />
     <Compile Include="Core\Object.cs" />
     <Compile Include="Core\DataType.cs" />
     <Compile Include="MainWindow.xaml.cs">
