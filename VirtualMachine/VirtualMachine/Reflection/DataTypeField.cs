@@ -3,7 +3,13 @@
 	public class DataTypeField : DataTypeMember
 	{
 		public DataTypeField()
-			: base(Core.DataType.DataTypeFieldDataType)
+			: base(DataTypeFieldDataType)
 		{ }
+
+		#region Metadata
+
+		public static readonly Core.DataType DataTypeFieldDataType = new Core.DataType(DataTypeMemberDataType, new DataTypeField[0]);
+
+		#endregion
 	}
 }

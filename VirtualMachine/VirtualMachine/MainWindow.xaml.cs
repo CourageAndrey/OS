@@ -6,7 +6,7 @@
 		{
 			InitializeComponent();
 
-			Content = new Core.Object();
+			Content = new Core.Object().DataType;
 		}
 	}
 }

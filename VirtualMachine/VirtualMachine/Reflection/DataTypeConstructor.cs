@@ -3,7 +3,13 @@
 	public class DataTypeConstructor : DataTypeMember
 	{
 		public DataTypeConstructor()
-			: base(Core.DataType.DataTypeConstructorDataType)
+			: base(DataTypeConstructorDataType)
 		{ }
+
+		#region Metadata
+
+		public static readonly Core.DataType DataTypeConstructorDataType = new Core.DataType(DataTypeMemberDataType, new DataTypeField[0]);
+
+		#endregion
 	}
 }
