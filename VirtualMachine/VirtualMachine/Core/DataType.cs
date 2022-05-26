@@ -7,10 +7,10 @@ namespace VirtualMachine.Core
 		#region Properties
 
 		public DataType BaseType
-		{ get; }
+		{ get; internal set; }
 
 		public System.Collections.Generic.ICollection<DataTypeField> Fields
-		{ get; } = new System.Collections.Generic.List<DataTypeField>();
+		{ get; }
 
 		public System.Collections.Generic.ICollection<DataTypeMethod> Methods
 		{ get; } = new System.Collections.Generic.List<DataTypeMethod>();
@@ -28,36 +28,18 @@ namespace VirtualMachine.Core
 
 		#region Conctructors
 
-		public DataType(DataType baseType)
+		internal DataType(DataType baseType, System.Collections.Generic.ICollection<DataTypeField> fields)
 			: base(DataTypeDataType)
 		{
-			if (baseType != null)
-			{
-				BaseType = baseType;
-			}
-			else
-			{
-				throw new System.ArgumentNullException(nameof(baseType));
-			}
+			BaseType = baseType;
+			Fields = fields;
 		}
-
-		private DataType()
-			: base(DataTypeDataType)
-		{ }
 
 		#endregion
 
-		#region List
+		#region Metadata
 
-		public static readonly DataType ObjectDataType = new DataType();
-		public static readonly DataType DataTypeDataType = new DataType(ObjectDataType);
-
-		public static readonly DataType DataTypeMemberDataType = new DataType(ObjectDataType);
-		public static readonly DataType DataTypeFieldDataType = new DataType(DataTypeMemberDataType);
-		public static readonly DataType DataTypeMethodDataType = new DataType(DataTypeMemberDataType);
-		public static readonly DataType DataTypePropertyDataType = new DataType(DataTypeMemberDataType);
-		public static readonly DataType DataTypeEventDataType = new DataType(DataTypeMemberDataType);
-		public static readonly DataType DataTypeConstructorDataType = new DataType(DataTypeMemberDataType);
+		public static readonly DataType DataTypeDataType = new DataType(ObjectDataType, new DataTypeField[0]);
 
 		#endregion
 
@@ -89,6 +71,17 @@ namespace VirtualMachine.Core
 			{
 				yield return constructor;
 			}
+		}
+
+		internal System.Collections.Generic.List<DataTypeField> GetAllFields()
+		{
+			var fields = BaseType != null
+				? BaseType.GetAllFields()
+				: new System.Collections.Generic.List<DataTypeField>();
+
+			fields.AddRange(Fields);
+
+			return fields;
 		}
 
 		#endregion
