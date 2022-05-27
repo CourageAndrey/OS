@@ -58,6 +58,9 @@ namespace VirtualMachine.Core
 			DataType.FieldBaseType = new DataTypeField();
 			DataType.DataTypeDataType.Fields.Add(FieldDataType);
 
+			Array.FieldLength = new DataTypeField();
+			Array.ArrayDataType.Fields.Add(FieldDataType);
+
 			AddFieldWithValue(ObjectDataType, FieldDataType, ObjectDataType);
 			AddFieldWithValue(DataType.DataTypeDataType, FieldDataType, DataType.DataTypeDataType);
 			AddFieldWithValue(DataTypeMember.DataTypeMemberDataType, FieldDataType, DataType.DataTypeDataType);
@@ -75,6 +78,12 @@ namespace VirtualMachine.Core
 			AddFieldWithValue(DataTypeProperty.DataTypePropertyDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
 			AddFieldWithValue(DataTypeConstructor.DataTypeConstructorDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
 			AddFieldWithValue(DataTypeEvent.DataTypeEventDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
+
+			AddFieldWithValue(Integer.IntegerDataType, FieldDataType, DataType.DataTypeDataType);
+			AddFieldWithValue(Integer.IntegerDataType, DataType.FieldBaseType, ObjectDataType);
+
+			AddFieldWithValue(Array.ArrayDataType, FieldDataType, DataType.DataTypeDataType);
+			AddFieldWithValue(Array.ArrayDataType, DataType.FieldBaseType, ObjectDataType);
 		}
 
 		private static void AddFieldWithValue(Object self, DataTypeField field, Object value)
