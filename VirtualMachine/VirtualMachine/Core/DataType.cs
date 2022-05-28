@@ -1,93 +1,48 @@
-﻿using VirtualMachine.Reflection;
+﻿using MemoryAddress = System.Int32;
+using MemoryOffset = System.Int32;
+using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class DataType : Object
+	public class DataType : ClassInstance
 	{
 		#region Properties
 
+		protected internal const MemoryOffset FieldOffsetBaseType = FieldsCountOfObjectClass + 0;
+		protected internal const MemoryOffset FieldOffsetFields = FieldsCountOfObjectClass + 1;
+		protected internal const MemoryOffset FieldOffsetMethods = FieldsCountOfObjectClass + 2;
+		protected internal const MemoryOffset FieldOffsetProperties = FieldsCountOfObjectClass + 3;
+		protected internal const MemoryOffset FieldOffsetEvents = FieldsCountOfObjectClass + 4;
+		protected internal const MemoryOffset FieldOffsetConstructors = FieldsCountOfObjectClass + 5;
+
+		protected internal const MemoryOffset FieldsCountOfDataTypeClass = 6;
+		protected internal const MemoryOffset TotalFieldsCountOfDataTypeClass = TotalFieldsCountOfObjectClass + FieldsCountOfDataTypeClass;
+
 		public DataType BaseType
-		{
-			get { return (DataType) _data[ObjectDataType.Fields.Count + 0]; }
-			internal set { _data[ObjectDataType.Fields.Count + 0] = value; }
-		}
+		{ get { return GetFieldValue<DataType>(FieldOffsetBaseType); } }
 
-		public System.Collections.Generic.ICollection<DataTypeField> Fields
-		{ get; } = new System.Collections.Generic.List<DataTypeField>();
+		public Array/*<DataTypeField>*/ Fields
+		{ get { return GetFieldValue<Array>(FieldOffsetFields); } }
 
-		public System.Collections.Generic.ICollection<DataTypeMethod> Methods
-		{ get; } = new System.Collections.Generic.List<DataTypeMethod>();
+		public Array/*<DataTypeMethod>*/ Methods
+		{ get { return GetFieldValue<Array>(FieldOffsetMethods); } }
 
-		public System.Collections.Generic.ICollection<DataTypeProperty> Properties
-		{ get; } = new System.Collections.Generic.List<DataTypeProperty>();
+		public Array/*<DataTypeProperty>*/ Properties
+		{ get { return GetFieldValue<Array>(FieldOffsetProperties); } }
 
-		public System.Collections.Generic.ICollection<DataTypeEvent> Events
-		{ get; } = new System.Collections.Generic.List<DataTypeEvent>();
+		public Array/*<DataTypeEvent>*/ Events
+		{ get { return GetFieldValue<Array>(FieldOffsetEvents); } }
 
-		public System.Collections.Generic.ICollection<DataTypeConstructor> Constructors
-		{ get; } = new System.Collections.Generic.List<DataTypeConstructor>();
+		public Array/*<DataTypeConstructor>*/ Constructors
+		{ get { return GetFieldValue<Array>(FieldOffsetConstructors); } }
 
 		#endregion
 
 		#region Conctructors
 
-		public static DataType Create(DataType baseType)
-		{
-			var result = Create<DataType>(DataTypeDataType);
-			result.BaseType = baseType;
-			return result;
-		}
-
-		#endregion
-
-		#region Metadata
-
-		public static readonly DataType DataTypeDataType = new DataType();
-
-		internal static DataTypeField FieldBaseType;
-
-		#endregion
-
-		#region Public API
-
-		public System.Collections.Generic.IEnumerable<DataTypeMember> GetAllMembers()
-		{
-			foreach (var field in Fields)
-			{
-				yield return field;
-			}
-
-			foreach (var method in Methods)
-			{
-				yield return method;
-			}
-
-			foreach (var property in Properties)
-			{
-				yield return property;
-			}
-
-			foreach (var @event in Events)
-			{
-				yield return @event;
-			}
-
-			foreach (var constructor in Constructors)
-			{
-				yield return constructor;
-			}
-		}
-
-		internal System.Collections.Generic.List<DataTypeField> GetAllFields()
-		{
-			var fields = BaseType != null
-				? BaseType.GetAllFields()
-				: new System.Collections.Generic.List<DataTypeField>();
-
-			fields.AddRange(Fields);
-
-			return fields;
-		}
+		public DataType(Memory memory, MemoryAddress memoryAddress)
+			: base(memory, memoryAddress)
+		{ }
 
 		#endregion
 	}
