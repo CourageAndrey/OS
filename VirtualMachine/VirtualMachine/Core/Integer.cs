@@ -1,59 +1,32 @@
-﻿using System;
+﻿using MemoryAddress = System.Int32;
+using MemoryOffset = System.Int32;
+using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Integer : Object, IEquatable<Integer>
+	public class Integer : Structure
 	{
 		#region Properties
 
-		internal readonly int Value;
+		public MemoryWord Value
+		{
+			get { return _memory.Cells[_memoryAddress]; }
+			set { _memory.Cells[_memoryAddress] = value; }
+		}
 
 		#endregion
 
 		#region Conctructors
 
-		public Integer(int value)
-		{
-			Value = value;
-		}
-
-		public static Integer Create(int value)
-		{
-			var result = new Integer(value);
-			result.CallConstructor(IntegerDataType);
-			return result;
-		}
+		public Integer(Memory memory, MemoryAddress memoryAddress)
+			: base(memory, memoryAddress, memory.IntegerDataType)
+		{ }
 
 		#endregion
-
-		#region Metadata
-
-		public static readonly DataType IntegerDataType = new DataType();
-
-		#endregion
-
-		#region Implementation of IEquatable
-
-		public bool Equals(Integer other)
-		{
-			return Value.Equals(other?.Value);
-		}
-
-		public override bool Equals(object other)
-		{
-			return Equals(other as Integer);
-		}
-
-		public override int GetHashCode()
-		{
-			return Value.GetHashCode();
-		}
 
 		public override string ToString()
 		{
 			return Value.ToString();
 		}
-
-		#endregion
 	}
 }

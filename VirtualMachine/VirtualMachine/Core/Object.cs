@@ -1,97 +1,102 @@
-﻿using VirtualMachine.Reflection;
+﻿using MemoryAddress = System.Int32;
+using MemoryOffset = System.Int32;
+using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Object
+	public abstract class Object
 	{
 		#region Properties
 
-		public DataType DataType
-		{
-			get { return (DataType) _data[0]; }
-			private set { _data[0] = value; }
-		}
+		protected readonly Memory _memory;
+		protected readonly MemoryAddress _memoryAddress;
 
-		protected System.Collections.Generic.IList<DataTypeField> _fields;
-		protected System.Collections.Generic.IList<Object> _data;
+		public abstract DataType DataType
+		{ get; }
+
+		internal string Tag;
 
 		#endregion
 
 		#region Conctructors
 
-		public Object()
+		protected Object(Memory memory, MemoryAddress memoryAddress)
 		{
-			_fields = new DataTypeField[0];
-			_data = new Object[0];
-		}
-
-		public static ObjectT Create<ObjectT>(DataType type)
-			where ObjectT : Object, new()
-		{
-			var result = new ObjectT();
-			result.CallConstructor(type);
-			return result;
-		}
-
-		protected void CallConstructor(DataType type)
-		{
-			_fields = type.GetAllFields();
-			_data = new Object[_fields.Count];
-			DataType = type;
+			_memory = memory;
+			_memoryAddress = memoryAddress;
 		}
 
 		#endregion
 
-		#region Metadata
-
-		internal static readonly DataTypeField FieldDataType;
-
-		public static readonly DataType ObjectDataType;
-
-		static Object()
+		protected ObjectT GetFieldValue<ObjectT>(MemoryOffset field)
+			where ObjectT : Object
 		{
-			ObjectDataType = new DataType();
+			MemoryAddress fieldCellAddress = _memoryAddress + field;
 
-			FieldDataType = new DataTypeField();
-			ObjectDataType.Fields.Add(FieldDataType);
-
-			DataType.FieldBaseType = new DataTypeField();
-			DataType.DataTypeDataType.Fields.Add(FieldDataType);
-
-			Array.FieldLength = new DataTypeField();
-			Array.ArrayDataType.Fields.Add(FieldDataType);
-
-			AddFieldWithValue(ObjectDataType, FieldDataType, ObjectDataType);
-			AddFieldWithValue(DataType.DataTypeDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeMember.DataTypeMemberDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeField.DataTypeFieldDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeMethod.DataTypeMethodDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeProperty.DataTypePropertyDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeConstructor.DataTypeConstructorDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(DataTypeEvent.DataTypeEventDataType, FieldDataType, DataType.DataTypeDataType);
-
-			AddFieldWithValue(ObjectDataType, DataType.FieldBaseType, null);
-			AddFieldWithValue(DataType.DataTypeDataType, DataType.FieldBaseType, ObjectDataType);
-			AddFieldWithValue(DataTypeMember.DataTypeMemberDataType, DataType.FieldBaseType, ObjectDataType);
-			AddFieldWithValue(DataTypeField.DataTypeFieldDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
-			AddFieldWithValue(DataTypeMethod.DataTypeMethodDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
-			AddFieldWithValue(DataTypeProperty.DataTypePropertyDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
-			AddFieldWithValue(DataTypeConstructor.DataTypeConstructorDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
-			AddFieldWithValue(DataTypeEvent.DataTypeEventDataType, DataType.FieldBaseType, DataTypeMember.DataTypeMemberDataType);
-
-			AddFieldWithValue(Integer.IntegerDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(Integer.IntegerDataType, DataType.FieldBaseType, ObjectDataType);
-
-			AddFieldWithValue(Array.ArrayDataType, FieldDataType, DataType.DataTypeDataType);
-			AddFieldWithValue(Array.ArrayDataType, DataType.FieldBaseType, ObjectDataType);
+			if (typeof(Structure).IsAssignableFrom(typeof(ObjectT)))
+			{
+#warning Wrong implementation of right approach.
+				if (typeof(ObjectT) == typeof(Integer))
+				{
+					return new Integer(_memory, fieldCellAddress) as ObjectT;
+				}
+				else
+				{
+					throw new System.NotSupportedException();
+				}
+			}
+			else
+			{
+				MemoryAddress fieldValue = (MemoryAddress) _memory.Cells[fieldCellAddress];
+				return _memory.GetObject<ObjectT>(fieldValue);
+			}
 		}
 
-		private static void AddFieldWithValue(Object self, DataTypeField field, Object value)
+		public override string ToString()
 		{
-			self._fields = new System.Collections.Generic.List<DataTypeField>(self._fields) { field }.ToArray();
-			self._data = new System.Collections.Generic.List<Object>(self._data) { value }.ToArray();
+			return Tag ?? base.ToString();
 		}
+	}
+
+	public abstract class ClassInstance : Object
+	{
+		#region Properties
+
+		protected internal const MemoryOffset FieldOffsetDataType = 0;
+
+		protected internal const MemoryOffset FieldsCountOfObjectClass = 1;
+		protected internal const MemoryOffset TotalFieldsCountOfObjectClass = FieldsCountOfObjectClass;
+
+		public override DataType DataType
+		{ get { return GetFieldValue<DataType>(FieldOffsetDataType); } }
+
+		#endregion
+
+		#region Conctructors
+
+		protected ClassInstance(Memory memory, MemoryAddress memoryAddress)
+			: base(memory, memoryAddress)
+		{ }
 
 		#endregion
 	}
+
+	public abstract class Structure : Object
+	{
+		public override DataType DataType
+		{ get { return _dataType; } }
+
+		private readonly DataType _dataType;
+
+		protected Structure(Memory memory, MemoryAddress memoryAddress, DataType dataType)
+			: base(memory, memoryAddress)
+		{
+			_dataType = dataType;
+		}
+	}
+
+	/*public abstract class Interface : Object
+	{
+
+	}*/
 }

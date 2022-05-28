@@ -1,43 +1,38 @@
-﻿using VirtualMachine.Reflection;
+﻿using MemoryAddress = System.Int32;
+using MemoryOffset = System.Int32;
+using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Array : Object
+	public class Array : ClassInstance
 	{
 		#region Properties
 
-		public Integer Length
-		{
-			get { return (Integer) _data[ObjectDataType.Fields.Count + 0]; }
-			internal set { _data[ObjectDataType.Fields.Count + 0] = value; }
-		}
+		protected internal const MemoryOffset FieldOffsetLength = FieldsCountOfObjectClass + 0;
 
-		internal readonly Object[] Items;
+		protected internal const MemoryOffset FieldsCountOfArrayClass = 1;
+		protected internal const MemoryOffset TotalFieldsCountOfArrayClass = TotalFieldsCountOfObjectClass + FieldsCountOfArrayClass;
+
+		public Integer Length
+		{ get { return GetFieldValue<Integer>(FieldOffsetLength); } }
+
+		public Object this[MemoryAddress index]
+		{
+			get
+			{
+#warning No structs are processed here! Need to make array typed.
+				MemoryAddress pointer = TotalFieldsCountOfArrayClass + index;
+				return GetFieldValue<Object>(pointer);
+			}
+		}
 
 		#endregion
 
 		#region Conctructors
 
-		public Array(Integer length)
-		{
-			Items = new Object[length.Value];
-		}
-
-		public static Array Create(Integer length)
-		{
-			var result = new Array(length);
-			result.CallConstructor(ArrayDataType);
-			result.Length = length;
-			return result;
-		}
-
-		#endregion
-
-		#region Metadata
-
-		public static readonly DataType ArrayDataType = new DataType();
-
-		internal static DataTypeField FieldLength;
+		public Array(Memory memory, MemoryAddress memoryAddress)
+			: base(memory, memoryAddress)
+		{ }
 
 		#endregion
 	}
