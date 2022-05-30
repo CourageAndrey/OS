@@ -4,7 +4,7 @@ using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Array : ClassInstance
+	public abstract class Array : ClassInstance
 	{
 		#region Properties
 
@@ -16,23 +16,39 @@ namespace VirtualMachine.Core
 		public Integer Length
 		{ get { return GetFieldValue<Integer>(FieldOffsetLength); } }
 
-		public Object this[MemoryAddress index]
-		{
-			get
-			{
-#warning No structs are processed here! Need to make array typed.
-				MemoryAddress pointer = TotalFieldsCountOfArrayClass + index;
-				return GetFieldValue<Object>(pointer);
-			}
-		}
+		#endregion
+
+		#region Conctructors
+
+		protected Array(Memory memory, MemoryAddress memoryAddress)
+			: base(memory, memoryAddress)
+		{ }
+
+		#endregion
+	}
+
+	public class Array<ItemT> : Array
+		where ItemT : Object
+	{
+		#region Properties
+
+		private readonly MemoryOffset _itemDataSize;
+
+		public override MemoryOffset DataSize
+		{ get { return TotalFieldsCountOfArrayClass + ((MemoryAddress) Length.Value) * _itemDataSize; } }
+
+		public ItemT this[MemoryAddress index]
+		{ get { return _memory.GetObject<ItemT>(_memoryAddress + TotalFieldsCountOfArrayClass + index * _itemDataSize); } }
 
 		#endregion
 
 		#region Conctructors
 
-		public Array(Memory memory, MemoryAddress memoryAddress)
+		public Array(Memory memory, MemoryAddress memoryAddress, MemoryOffset itemDataSize)
 			: base(memory, memoryAddress)
-		{ }
+		{
+			_itemDataSize = itemDataSize;
+		}
 
 		#endregion
 	}

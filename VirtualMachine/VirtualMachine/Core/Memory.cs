@@ -103,10 +103,22 @@ namespace VirtualMachine.Core
 			MemoryAddress arrayDataTypeAddress = dataTypeDataTypeAddress + 8 * initialObjectsOffset;
 			_objects[arrayDataTypeAddress] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
 
-			// load empty array
-			Array emptyArray;
-			MemoryAddress emptyArrayAddress = dataTypeDataTypeAddress + 9 * initialObjectsOffset;
-			_objects[emptyArrayAddress] = emptyArray = new Array(this, emptyArrayAddress);
+			// load empty arrays
+			Array<DataTypeField> emptyArrayOfFields;
+			Array<DataTypeMethod> emptyArrayOfMethods;
+			Array<DataTypeProperty> emptyArrayOfProperties;
+			Array<DataTypeEvent> emptyArrayOfEvents;
+			Array<DataTypeConstructor> emptyArrayOfConstructors;
+			MemoryAddress emptyArrayOfFieldsAddress = dataTypeDataTypeAddress + 9 * initialObjectsOffset;
+			MemoryAddress emptyArrayOfMethodsAddress = emptyArrayOfFieldsAddress + 2;
+			MemoryAddress emptyArrayOfPropertiesAddress = emptyArrayOfFieldsAddress + 4;
+			MemoryAddress emptyArrayOfEventsAddress = emptyArrayOfFieldsAddress + 6;
+			MemoryAddress emptyArrayOfConstructorsAddress = emptyArrayOfFieldsAddress + 8;
+			_objects[emptyArrayOfFieldsAddress] = emptyArrayOfFields = new Array<DataTypeField>(this, emptyArrayOfFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			_objects[emptyArrayOfMethodsAddress] = emptyArrayOfMethods = new Array<DataTypeMethod>(this, emptyArrayOfMethodsAddress, DataTypeMethod.TotalFieldsCountOfDataTypeMethodClass);
+			_objects[emptyArrayOfPropertiesAddress] = emptyArrayOfProperties = new Array<DataTypeProperty>(this, emptyArrayOfPropertiesAddress, DataTypeProperty.TotalFieldsCountOfDataTypePropertyClass);
+			_objects[emptyArrayOfEventsAddress] = emptyArrayOfEvents = new Array<DataTypeEvent>(this, emptyArrayOfEventsAddress, DataTypeEvent.TotalFieldsCountOfDataTypeEventClass);
+			_objects[emptyArrayOfConstructorsAddress] = emptyArrayOfConstructors = new Array<DataTypeConstructor>(this, emptyArrayOfConstructorsAddress, DataTypeConstructor.TotalFieldsCountOfDataTypeConstructorClass);
 
 			// load fields arrays
 			Array
@@ -117,9 +129,9 @@ namespace VirtualMachine.Core
 				arrayObjectFieldsAddress = dataTypeDataTypeAddress + 10 * initialObjectsOffset,
 				arrayTypeFieldsAddress = dataTypeDataTypeAddress + 11 * initialObjectsOffset,
 				arrayArrayFieldsAddress = dataTypeDataTypeAddress + 12 * initialObjectsOffset;
-			_objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array(this, arrayObjectFieldsAddress);
-			_objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array(this, arrayTypeFieldsAddress);
-			_objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array(this, arrayArrayFieldsAddress);
+			_objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array<DataTypeField>(this, arrayObjectFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			_objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array<DataTypeField>(this, arrayTypeFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			_objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array<DataTypeField>(this, arrayArrayFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
 
 			// load fields
 			DataTypeField
@@ -161,10 +173,14 @@ namespace VirtualMachine.Core
 			IntegerDataType.Tag = "Integer DataType";
 			ArrayDataType.Tag = "Array DataType";
 
-			emptyArray.Tag = "Empty array";
-			objectFieldsArray.Tag = "Array of fields";
-			typeFieldsArray.Tag = "Array of fields";
-			arrayFieldsArray.Tag = "Array of fields";
+			emptyArrayOfFields.Tag = "Empty array of Fields";
+			emptyArrayOfMethods.Tag = "Empty array of Methods";
+			emptyArrayOfProperties.Tag = "Empty array of Properties";
+			emptyArrayOfEvents.Tag = "Empty array of Events";
+			emptyArrayOfConstructors.Tag = "Empty array of Constructors";
+			objectFieldsArray.Tag = "Array of Object type fields";
+			typeFieldsArray.Tag = "Array of DataType type fields";
+			arrayFieldsArray.Tag = "Array of Array type fields";
 
 			objectDataTypeField.Tag = "object DataType Field";
 			dataTypeBaseTypeField.Tag = "DataType BaseType Field";
@@ -186,26 +202,42 @@ namespace VirtualMachine.Core
 				throw new System.Exception("Invalid memory address.");
 			}
 
-			if (address == 0)
+			if (typeof(Structure).IsAssignableFrom(typeof(ObjectT)))
 			{
-				return null;
-			}
-
-			Object result;
-			if (_objects.TryGetValue(address, out result))
-			{
-				if (typeof(ObjectT).IsAssignableFrom(result.GetType()))
+				if (typeof(ObjectT) == typeof(Integer))
 				{
-					return result as ObjectT;
+					return new Integer(this, address) as ObjectT;
 				}
 				else
 				{
-					throw new System.InvalidCastException($"Impossible to cast {typeof(ObjectT)} to {result.GetType()}.");
+					throw new System.NotSupportedException();
 				}
 			}
 			else
 			{
-				throw new System.Exception("There is no object with such address.");
+				address = (MemoryAddress) Cells[address];
+
+				if (address == 0)
+				{
+					return null;
+				}
+
+				Object result;
+				if (_objects.TryGetValue(address, out result))
+				{
+					if (typeof(ObjectT).IsAssignableFrom(result.GetType()))
+					{
+						return result as ObjectT;
+					}
+					else
+					{
+						throw new System.InvalidCastException($"Impossible to cast {typeof(ObjectT)} to {result.GetType()}.");
+					}
+				}
+				else
+				{
+					throw new System.Exception("There is no object with such address.");
+				}
 			}
 		}
 	}

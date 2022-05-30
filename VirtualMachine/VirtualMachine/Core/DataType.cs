@@ -1,4 +1,6 @@
-﻿using MemoryAddress = System.Int32;
+﻿using VirtualMachine.Reflection;
+
+using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
 using MemoryWord = System.UInt64;
 
@@ -18,23 +20,26 @@ namespace VirtualMachine.Core
 		protected internal const MemoryOffset FieldsCountOfDataTypeClass = 6;
 		protected internal const MemoryOffset TotalFieldsCountOfDataTypeClass = TotalFieldsCountOfObjectClass + FieldsCountOfDataTypeClass;
 
+		public override int DataSize
+		{ get { return TotalFieldsCountOfDataTypeClass; } }
+
 		public DataType BaseType
 		{ get { return GetFieldValue<DataType>(FieldOffsetBaseType); } }
 
-		public Array/*<DataTypeField>*/ Fields
-		{ get { return GetFieldValue<Array>(FieldOffsetFields); } }
+		public Array<DataTypeField> Fields
+		{ get { return GetFieldValue<Array<DataTypeField>>(FieldOffsetFields); } }
 
-		public Array/*<DataTypeMethod>*/ Methods
-		{ get { return GetFieldValue<Array>(FieldOffsetMethods); } }
+		public Array<DataTypeMethod> Methods
+		{ get { return GetFieldValue<Array<DataTypeMethod>>(FieldOffsetMethods); } }
 
-		public Array/*<DataTypeProperty>*/ Properties
-		{ get { return GetFieldValue<Array>(FieldOffsetProperties); } }
+		public Array<DataTypeProperty> Properties
+		{ get { return GetFieldValue<Array<DataTypeProperty>>(FieldOffsetProperties); } }
 
-		public Array/*<DataTypeEvent>*/ Events
-		{ get { return GetFieldValue<Array>(FieldOffsetEvents); } }
+		public Array<DataTypeEvent> Events
+		{ get { return GetFieldValue<Array<DataTypeEvent>>(FieldOffsetEvents); } }
 
-		public Array/*<DataTypeConstructor>*/ Constructors
-		{ get { return GetFieldValue<Array>(FieldOffsetConstructors); } }
+		public Array<DataTypeConstructor> Constructors
+		{ get { return GetFieldValue<Array<DataTypeConstructor>>(FieldOffsetConstructors); } }
 
 		#endregion
 

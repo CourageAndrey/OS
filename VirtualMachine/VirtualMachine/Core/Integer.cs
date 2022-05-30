@@ -14,6 +14,9 @@ namespace VirtualMachine.Core
 			set { _memory.Cells[_memoryAddress] = value; }
 		}
 
+		public override MemoryOffset DataSize
+		{ get { return 1; } } // one memory word of data
+
 		#endregion
 
 		#region Conctructors

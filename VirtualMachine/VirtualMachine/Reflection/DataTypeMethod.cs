@@ -13,6 +13,9 @@ namespace VirtualMachine.Reflection
 		protected internal const MemoryOffset FieldsCountOfDataTypeMethodClass = 0;
 		protected internal const MemoryOffset TotalFieldsCountOfDataTypeMethodClass = TotalFieldsCountOfDataTypeMemberClass + FieldsCountOfDataTypeMethodClass;
 
+		public override int DataSize
+		{ get { return TotalFieldsCountOfDataTypeMethodClass; } }
+
 		#endregion
 
 		#region Conctructors

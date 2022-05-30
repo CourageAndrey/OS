@@ -19,10 +19,10 @@ namespace VirtualMachine
 				0011, // 0001 DataType > DataTypeDataType
 				0000, // 0002 BaseType > #NULL
 				0111, // 0003 Fields > Array of object fields
-				0101, // 0004 Methods > Empty array
-				0101, // 0005 Properties > Empty array
-				0101, // 0006 Events > Empty array
-				0101, // 0007 Constructors > Empty array
+				0103, // 0004 Methods > Empty array of Methods
+				0105, // 0005 Properties > Empty array of Properties
+				0107, // 0006 Events > Empty array of Events
+				0109, // 0007 Constructors > Empty array of Constructors
 				0000, // 0008
 				0000, // 0009
 				0000, // 0010
@@ -31,10 +31,10 @@ namespace VirtualMachine
 				0011, // 0011 DataType > DataTypeDataType
 				0001, // 0012 BaseType > ObjectDataType
 				0121, // 0013 Fields > Array of type fields
-				0101, // 0014 Methods > Empty array
-				0101, // 0015 Properties > Empty array
-				0101, // 0016 Events > Empty array
-				0101, // 0017 Constructors > Empty array
+				0103, // 0014 Methods > Empty array of Methods
+				0105, // 0015 Properties > Empty array of Properties
+				0107, // 0016 Events > Empty array of Events
+				0109, // 0017 Constructors > Empty array of Constructors
 				0000, // 0018
 				0000, // 0019
 				0000, // 0020
@@ -42,11 +42,11 @@ namespace VirtualMachine
 				//--- DataTypeMemberDataType ---
 				0011, // 0021 DataType > DataTypeDataType
 				0001, // 0022 BaseType > ObjectDataType
-				0101, // 0023 Fields > Empty array
-				0101, // 0024 Methods > Empty array
-				0101, // 0025 Properties > Empty array
-				0101, // 0026 Events > Empty array
-				0101, // 0027 Constructors > Empty array
+				0101, // 0023 Fields > Empty array of Fields
+				0103, // 0024 Methods > Empty array of Methods
+				0105, // 0025 Properties > Empty array of Properties
+				0107, // 0026 Events > Empty array of Events
+				0109, // 0027 Constructors > Empty array of Constructors
 				0000, // 0028
 				0000, // 0029
 				0000, // 0030
@@ -54,11 +54,11 @@ namespace VirtualMachine
 				//--- DataTypeFieldDataType ---
 				0011, // 0031 DataType > DataTypeDataType
 				0021, // 0032 BaseType > DataTypeMemberDataType
-				0101, // 0033 Fields > Empty array
-				0101, // 0034 Methods > Empty array
-				0101, // 0035 Properties > Empty array
-				0101, // 0036 Events > Empty array
-				0101, // 0037 Constructors > Empty array
+				0101, // 0033 Fields > Empty array of Fields
+				0103, // 0034 Methods > Empty array of Methods
+				0105, // 0035 Properties > Empty array of Properties
+				0107, // 0036 Events > Empty array of Events
+				0109, // 0037 Constructors > Empty array of Constructors
 				0000, // 0038
 				0000, // 0039
 				0000, // 0040
@@ -66,11 +66,11 @@ namespace VirtualMachine
 				//--- DataTypeMethodDataType ---
 				0011, // 0041 DataType > DataTypeDataType
 				0021, // 0042 BaseType > DataTypeMemberDataType
-				0101, // 0043 Fields > Empty array
-				0101, // 0044 Methods > Empty array
-				0101, // 0045 Properties > Empty array
-				0101, // 0046 Events > Empty array
-				0101, // 0047 Constructors > Empty array
+				0101, // 0043 Fields > Empty array of Fields
+				0103, // 0044 Methods > Empty array of Methods
+				0105, // 0045 Properties > Empty array of Properties
+				0107, // 0046 Events > Empty array of Events
+				0109, // 0047 Constructors > Empty array of Constructors
 				0000, // 0048
 				0000, // 0049
 				0000, // 0050
@@ -78,11 +78,11 @@ namespace VirtualMachine
 				//--- DataTypePropertyDataType ---
 				0011, // 0051 DataType > DataTypeDataType
 				0021, // 0052 BaseType > DataTypeMemberDataType
-				0101, // 0053 Fields > Empty array
-				0101, // 0054 Methods > Empty array
-				0101, // 0055 Properties > Empty array
-				0101, // 0056 Events > Empty array
-				0101, // 0057 Constructors > Empty array
+				0101, // 0053 Fields > Empty array of Fields
+				0103, // 0054 Methods > Empty array of Methods
+				0105, // 0055 Properties > Empty array of Properties
+				0107, // 0056 Events > Empty array of Events
+				0109, // 0057 Constructors > Empty array of Constructors
 				0000, // 0058
 				0000, // 0059
 				0000, // 0060
@@ -90,11 +90,11 @@ namespace VirtualMachine
 				//--- DataTypeEventDataType ---
 				0011, // 0061 DataType > DataTypeDataType
 				0021, // 0062 BaseType > DataTypeMemberDataType
-				0101, // 0063 Fields > Empty array
-				0101, // 0064 Methods > Empty array
-				0101, // 0065 Properties > Empty array
-				0101, // 0066 Events > Empty array
-				0101, // 0067 Constructors > Empty array
+				0101, // 0063 Fields > Empty array of Fields
+				0103, // 0064 Methods > Empty array of Methods
+				0105, // 0065 Properties > Empty array of Properties
+				0107, // 0066 Events > Empty array of Events
+				0109, // 0067 Constructors > Empty array of Constructors
 				0000, // 0068
 				0000, // 0069
 				0000, // 0070
@@ -102,11 +102,11 @@ namespace VirtualMachine
 				//--- DataTypeConstructorDataType ---
 				0011, // 0070 DataType > DataTypeDataType
 				0021, // 0071 BaseType > DataTypeMemberDataType
-				0101, // 0072 Fields > Empty array
-				0101, // 0073 Methods > Empty array
-				0101, // 0074 Properties > Empty array
-				0101, // 0075 Events > Empty array
-				0101, // 0076 Constructors > Empty array
+				0101, // 0072 Fields > Empty array of Fields
+				0103, // 0074 Methods > Empty array of Methods
+				0105, // 0075 Properties > Empty array of Properties
+				0107, // 0076 Events > Empty array of Events
+				0109, // 0077 Constructors > Empty array of Constructors
 				0000, // 0078
 				0000, // 0079
 				0000, // 0080
@@ -114,11 +114,11 @@ namespace VirtualMachine
 				//--- IntegerDataType ---
 				0011, // 0081 DataType > DataTypeDataType
 				0001, // 0082 BaseType > ObjectDataType
-				0101, // 0083 Fields > Empty array
-				0101, // 0084 Methods > Empty array
-				0101, // 0085 Properties > Empty array
-				0101, // 0086 Events > Empty array
-				0101, // 0087 Constructors > Empty array
+				0101, // 0083 Fields > Empty array of Fields
+				0103, // 0084 Methods > Empty array of Methods
+				0105, // 0085 Properties > Empty array of Properties
+				0107, // 0086 Events > Empty array of Events
+				0109, // 0087 Constructors > Empty array of Constructors
 				0000, // 0088
 				0000, // 0089
 				0000, // 0090
@@ -127,25 +127,25 @@ namespace VirtualMachine
 				0011, // 0091 DataType > DataTypeDataType
 				0001, // 0092 BaseType > ObjectDataType
 				0131, // 0093 Fields > Array of array fields
-				0101, // 0094 Methods > Empty array
-				0101, // 0095 Properties > Empty array
-				0101, // 0096 Events > Empty array
-				0101, // 0097 Constructors > Empty array
+				0103, // 0094 Methods > Empty array of Methods
+				0105, // 0095 Properties > Empty array of Properties
+				0107, // 0096 Events > Empty array of Events
+				0109, // 0097 Constructors > Empty array of Constructors
 				0000, // 0098
 				0000, // 0099
 				0000, // 0100
 
-				//--- Empty array ---
-				0091, // 0101 DataType > ArrayDataType
+				//--- Empty arrays ---
+				0091, // 0101 DataType > ArrayDataType // <DataTypeField>
 				0000, // 0102 Length
-				0000, // 0103
-				0000, // 0104
-				0000, // 0105
-				0000, // 0106
-				0000, // 0107
-				0000, // 0108
-				0000, // 0109
-				0000, // 0110
+				0091, // 0103 DataType > ArrayDataType // <DataTypeMethod>
+				0000, // 0104 Length
+				0091, // 0105 DataType > ArrayDataType // <DataTypeProperty>
+				0000, // 0106 Length
+				0091, // 0107 DataType > ArrayDataType // <DataTypeEvent>
+				0000, // 0108 Length
+				0091, // 0109 DataType > ArrayDataType // <DataTypeConstructor>
+				0000, // 0110 Length
 
 				//--- Array of object fields ---
 				0091, // 0111 DataType > ArrayDataType
