@@ -14,6 +14,12 @@ namespace VirtualMachine.Core
 		public abstract DataType DataType
 		{ get; }
 
+		public abstract MemoryOffset VariableSize
+		{ get; }
+
+		public abstract MemoryOffset DataSize
+		{ get; }
+
 		internal string Tag;
 
 		#endregion
@@ -31,25 +37,7 @@ namespace VirtualMachine.Core
 		protected ObjectT GetFieldValue<ObjectT>(MemoryOffset field)
 			where ObjectT : Object
 		{
-			MemoryAddress fieldCellAddress = _memoryAddress + field;
-
-			if (typeof(Structure).IsAssignableFrom(typeof(ObjectT)))
-			{
-#warning Wrong implementation of right approach.
-				if (typeof(ObjectT) == typeof(Integer))
-				{
-					return new Integer(_memory, fieldCellAddress) as ObjectT;
-				}
-				else
-				{
-					throw new System.NotSupportedException();
-				}
-			}
-			else
-			{
-				MemoryAddress fieldValue = (MemoryAddress) _memory.Cells[fieldCellAddress];
-				return _memory.GetObject<ObjectT>(fieldValue);
-			}
+			return _memory.GetObject<ObjectT>(_memoryAddress + field);
 		}
 
 		public override string ToString()
@@ -70,6 +58,9 @@ namespace VirtualMachine.Core
 		public override DataType DataType
 		{ get { return GetFieldValue<DataType>(FieldOffsetDataType); } }
 
+		public override MemoryOffset VariableSize
+		{ get { return 1; } } // one memory word-length pointer
+
 		#endregion
 
 		#region Conctructors
@@ -88,10 +79,26 @@ namespace VirtualMachine.Core
 
 		private readonly DataType _dataType;
 
+		public override MemoryOffset VariableSize
+		{ get { return DataSize; } } // because structures are stored by values
+
 		protected Structure(Memory memory, MemoryAddress memoryAddress, DataType dataType)
 			: base(memory, memoryAddress)
 		{
 			_dataType = dataType;
+		}
+
+		public static StructT TypeCast<StructT>(Memory memory, MemoryAddress memoryAddress)
+			where StructT : Structure
+		{
+			if (typeof(StructT) == typeof(Integer))
+			{
+				return new Integer(memory, memoryAddress) as StructT;
+			}
+			else
+			{
+				throw new System.InvalidCastException();
+			}
 		}
 	}
 
