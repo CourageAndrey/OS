@@ -8,7 +8,7 @@ namespace VirtualMachine.Core
 	{
 		public static System.Tuple<MemoryWord[], MemoryAddress> LoadSample()
 		{
-			return new System.Tuple<MemoryWord[], MemoryAddress>(new MemoryWord[]
+			var memory =  new System.Tuple<MemoryWord[], MemoryAddress>(new MemoryWord[]
 			{
 				//--- NULL (ZERO pointer) ---
 				0000, // 0000
@@ -21,7 +21,7 @@ namespace VirtualMachine.Core
 				0105, // 0005 Properties > Empty array of Properties
 				0107, // 0006 Events > Empty array of Events
 				0109, // 0007 Constructors > Empty array of Constructors
-				0000, // 0008
+				0241, // 0008 Name > "Object"
 				0000, // 0009
 				0000, // 0010
 
@@ -33,7 +33,7 @@ namespace VirtualMachine.Core
 				0105, // 0015 Properties > Empty array of Properties
 				0107, // 0016 Events > Empty array of Events
 				0109, // 0017 Constructors > Empty array of Constructors
-				0000, // 0018
+				0251, // 0018 Name > "DataType"
 				0000, // 0019
 				0000, // 0020
 
@@ -45,7 +45,7 @@ namespace VirtualMachine.Core
 				0105, // 0025 Properties > Empty array of Properties
 				0107, // 0026 Events > Empty array of Events
 				0109, // 0027 Constructors > Empty array of Constructors
-				0000, // 0028
+				0261, // 0028 Name > "DataTypeMember"
 				0000, // 0029
 				0000, // 0030
 
@@ -57,7 +57,7 @@ namespace VirtualMachine.Core
 				0105, // 0035 Properties > Empty array of Properties
 				0107, // 0036 Events > Empty array of Events
 				0109, // 0037 Constructors > Empty array of Constructors
-				0000, // 0038
+				0281, // 0038 Name > "DataTypeField"
 				0000, // 0039
 				0000, // 0040
 
@@ -69,7 +69,7 @@ namespace VirtualMachine.Core
 				0105, // 0045 Properties > Empty array of Properties
 				0107, // 0046 Events > Empty array of Events
 				0109, // 0047 Constructors > Empty array of Constructors
-				0000, // 0048
+				0301, // 0048 Name > "DataTypeMethod"
 				0000, // 0049
 				0000, // 0050
 
@@ -81,7 +81,7 @@ namespace VirtualMachine.Core
 				0105, // 0055 Properties > Empty array of Properties
 				0107, // 0056 Events > Empty array of Events
 				0109, // 0057 Constructors > Empty array of Constructors
-				0000, // 0058
+				0321, // 0058 Name > "DataTypeProperty"
 				0000, // 0059
 				0000, // 0060
 
@@ -93,7 +93,7 @@ namespace VirtualMachine.Core
 				0105, // 0065 Properties > Empty array of Properties
 				0107, // 0066 Events > Empty array of Events
 				0109, // 0067 Constructors > Empty array of Constructors
-				0000, // 0068
+				0341, // 0068 Name > "DataTypeEvent"
 				0000, // 0069
 				0000, // 0070
 
@@ -105,7 +105,7 @@ namespace VirtualMachine.Core
 				0105, // 0075 Properties > Empty array of Properties
 				0107, // 0076 Events > Empty array of Events
 				0109, // 0077 Constructors > Empty array of Constructors
-				0000, // 0078
+				0361, // 0078 Name > "DataTypeConstructor"
 				0000, // 0079
 				0000, // 0080
 
@@ -117,7 +117,7 @@ namespace VirtualMachine.Core
 				0105, // 0085 Properties > Empty array of Properties
 				0107, // 0086 Events > Empty array of Events
 				0109, // 0087 Constructors > Empty array of Constructors
-				0000, // 0088
+				0391, // 0088 Name > "Integer"
 				0000, // 0089
 				0000, // 0090
 
@@ -129,7 +129,7 @@ namespace VirtualMachine.Core
 				0105, // 0095 Properties > Empty array of Properties
 				0107, // 0096 Events > Empty array of Events
 				0109, // 0097 Constructors > Empty array of Constructors
-				0000, // 0098
+				0401, // 0098 Name > "Array"
 				0000, // 0099
 				0000, // 0100
 
@@ -285,7 +285,7 @@ namespace VirtualMachine.Core
 				0105, // 0225 Properties > Empty array of Properties
 				0107, // 0226 Events > Empty array of Events
 				0109, // 0227 Constructors > Empty array of Constructors
-				0000, // 0228
+				0411, // 0228 Name > "Char"
 				0000, // 0229
 				0000, // 0230
 
@@ -297,10 +297,258 @@ namespace VirtualMachine.Core
 				0105, // 0235 Properties > Empty array of Properties
 				0107, // 0236 Events > Empty array of Events
 				0109, // 0237 Constructors > Empty array of Constructors
-				0000, // 0238
+				0421, // 0238 Name > "String"
 				0000, // 0239
 				0000, // 0240
+
+				//--- String "Object" ---
+				0000, // 0241
+				0000, // 0242
+				0000, // 0243
+				0000, // 0244
+				0000, // 0245
+				0000, // 0246
+				0000, // 0247
+				0000, // 0248
+				0000, // 0249
+				0000, // 0250
+
+				//--- String "DataType" ---
+				0000, // 0251
+				0000, // 0252
+				0000, // 0253
+				0000, // 0254
+				0000, // 0255
+				0000, // 0256
+				0000, // 0257
+				0000, // 0258
+				0000, // 0259
+				0000, // 0260
+
+				//--- String "DataTypeMember" ---
+				0000, // 0261
+				0000, // 0262
+				0000, // 0263
+				0000, // 0264
+				0000, // 0265
+				0000, // 0266
+				0000, // 0267
+				0000, // 0268
+				0000, // 0269
+				0000, // 0270
+
+				0000, // 0271
+				0000, // 0272
+				0000, // 0273
+				0000, // 0274
+				0000, // 0275
+				0000, // 0276
+				0000, // 0277
+				0000, // 0278
+				0000, // 0279
+				0000, // 0280
+
+				//--- String "DataTypeField" ---
+				0000, // 0281
+				0000, // 0282
+				0000, // 0283
+				0000, // 0284
+				0000, // 0285
+				0000, // 0286
+				0000, // 0287
+				0000, // 0288
+				0000, // 0289
+				0000, // 0290
+
+				0000, // 0291
+				0000, // 0292
+				0000, // 0293
+				0000, // 0294
+				0000, // 0295
+				0000, // 0296
+				0000, // 0297
+				0000, // 0298
+				0000, // 0299
+				0000, // 0300
+
+				//--- String "DataTypeMethod" ---
+				0000, // 0301
+				0000, // 0302
+				0000, // 0303
+				0000, // 0304
+				0000, // 0305
+				0000, // 0306
+				0000, // 0307
+				0000, // 0308
+				0000, // 0309
+				0000, // 0310
+
+				0000, // 0311
+				0000, // 0312
+				0000, // 0313
+				0000, // 0314
+				0000, // 0315
+				0000, // 0316
+				0000, // 0317
+				0000, // 0318
+				0000, // 0319
+				0000, // 0320
+
+				//--- String "DataTypeProperty" ---
+				0000, // 0321
+				0000, // 0322
+				0000, // 0323
+				0000, // 0324
+				0000, // 0325
+				0000, // 0326
+				0000, // 0327
+				0000, // 0328
+				0000, // 0329
+				0000, // 0330
+
+				0000, // 0331
+				0000, // 0332
+				0000, // 0333
+				0000, // 0334
+				0000, // 0335
+				0000, // 0336
+				0000, // 0337
+				0000, // 0338
+				0000, // 0339
+				0000, // 0340
+
+				//--- String "DataTypeEvent" ---
+				0000, // 0341
+				0000, // 0342
+				0000, // 0343
+				0000, // 0344
+				0000, // 0345
+				0000, // 0346
+				0000, // 0347
+				0000, // 0348
+				0000, // 0349
+				0000, // 0350
+
+				0000, // 0351
+				0000, // 0352
+				0000, // 0353
+				0000, // 0354
+				0000, // 0355
+				0000, // 0356
+				0000, // 0357
+				0000, // 0358
+				0000, // 0359
+				0000, // 0360
+
+				//--- String "DataTypeConstructor" ---
+				0000, // 0361
+				0000, // 0362
+				0000, // 0363
+				0000, // 0364
+				0000, // 0365
+				0000, // 0366
+				0000, // 0367
+				0000, // 0368
+				0000, // 0369
+				0000, // 0370
+
+				0000, // 0371
+				0000, // 0372
+				0000, // 0373
+				0000, // 0374
+				0000, // 0375
+				0000, // 0376
+				0000, // 0377
+				0000, // 0378
+				0000, // 0379
+				0000, // 0380
+
+				0000, // 0381
+				0000, // 0382
+				0000, // 0383
+				0000, // 0384
+				0000, // 0385
+				0000, // 0386
+				0000, // 0387
+				0000, // 0388
+				0000, // 0389
+				0000, // 0390
+
+				//--- String "Integer" ---
+				0000, // 0391
+				0000, // 0392
+				0000, // 0393
+				0000, // 0394
+				0000, // 0395
+				0000, // 0396
+				0000, // 0397
+				0000, // 0398
+				0000, // 0399
+				0000, // 0400
+
+				//--- String "Array" ---
+				0000, // 0401
+				0000, // 0402
+				0000, // 0403
+				0000, // 0404
+				0000, // 0405
+				0000, // 0406
+				0000, // 0407
+				0000, // 0408
+				0000, // 0409
+				0000, // 0410
+
+				//--- String "Char" ---
+				0000, // 0411
+				0000, // 0412
+				0000, // 0413
+				0000, // 0414
+				0000, // 0415
+				0000, // 0416
+				0000, // 0417
+				0000, // 0418
+				0000, // 0419
+				0000, // 0420
+
+				//--- String "String" ---
+				0000, // 0421
+				0000, // 0422
+				0000, // 0423
+				0000, // 0424
+				0000, // 0425
+				0000, // 0426
+				0000, // 0427
+				0000, // 0428
+				0000, // 0429
+				0000, // 0430
 			}, 1);
+
+			writeString(memory.Item1, 0241, "Object");
+			writeString(memory.Item1, 0251, "DataType");
+			writeString(memory.Item1, 0261, "DataTypeMember");
+			writeString(memory.Item1, 0281, "DataTypeField");
+			writeString(memory.Item1, 0301, "DataTypeMethod");
+			writeString(memory.Item1, 0321, "DataTypeProperty");
+			writeString(memory.Item1, 0341, "DataTypeEvent");
+			writeString(memory.Item1, 0361, "DataTypeConstructor");
+			writeString(memory.Item1, 0391, "Integer");
+			writeString(memory.Item1, 0401, "Array");
+			writeString(memory.Item1, 0411, "Char");
+			writeString(memory.Item1, 0421, "String");
+
+			return memory;
+		}
+
+		private static void writeString(MemoryWord[] array, MemoryOffset address, string text)
+		{
+			array[address] = 0231; // data type = String
+			array[address + 1] = (MemoryWord) text.Length;
+			int index = 0;
+			foreach (char c in text)
+			{
+				array[address + 2 + index] = c;
+				index++;
+			}
 		}
 	}
 }

@@ -8,8 +8,7 @@ namespace VirtualMachine.Core
 {
 	public class Memory
 	{
-#warning This value has to be calculated.
-		public const MemoryAddress RequiredSize = 1;
+		public const MemoryAddress RequiredSize = 431;
 
 		#region Properties
 
@@ -111,7 +110,6 @@ namespace VirtualMachine.Core
 
 			MemoryAddress stringDataTypeAddress = dataTypeDataTypeAddress + 22 * initialObjectsOffset;
 			_objects[stringDataTypeAddress] = StringDataType = new DataType(this, stringDataTypeAddress);
-			
 
 			// load empty arrays
 			Array<DataTypeField> emptyArrayOfFields;
@@ -171,19 +169,58 @@ namespace VirtualMachine.Core
 			_objects[dataTypeConstructorsFieldAddress] = dataTypeConstructorsField = new DataTypeField(this, dataTypeConstructorsFieldAddress);
 			_objects[arrayLengthFieldAddress] = arrayLengthField = new DataTypeField(this, arrayLengthFieldAddress);
 
+			String
+				objectDataTypeName,
+				dataTypeDataTypeName,
+				dataTypeMemberDataTypeName,
+				dataTypeFieldDataTypeName,
+				dataTypeMethodDataTypeName,
+				dataTypePropertyDataTypeName,
+				dataTypeEventDataTypeName,
+				dataTypeConstructorDataTypeName,
+				integerDataTypeName,
+				arrayDataTypeName,
+				charDataTypeName,
+				stringDataTypeName;
+			MemoryAddress
+				objectDataTypeNameAddress = dataTypeDataTypeAddress + 23 * initialObjectsOffset,
+				dataTypeDataTypeNameAddress = dataTypeDataTypeAddress + 24 * initialObjectsOffset,
+				dataTypeMemberDataTypeNameAddress = dataTypeDataTypeAddress + 25 * initialObjectsOffset,
+				dataTypeFieldDataTypeNameAddress = dataTypeDataTypeAddress + 27 * initialObjectsOffset,
+				dataTypeMethodDataTypeNameAddress = dataTypeDataTypeAddress + 29 * initialObjectsOffset,
+				dataTypePropertyDataTypeNameAddress = dataTypeDataTypeAddress + 31 * initialObjectsOffset,
+				dataTypeEventDataTypeNameAddress = dataTypeDataTypeAddress + 33 * initialObjectsOffset,
+				dataTypeConstructorDataTypeNameAddress = dataTypeDataTypeAddress + 35 * initialObjectsOffset,
+				integerDataTypeNameAddress = dataTypeDataTypeAddress + 38 * initialObjectsOffset,
+				arrayDataTypeNameAddress = dataTypeDataTypeAddress + 39 * initialObjectsOffset,
+				charDataTypeNameAddress = dataTypeDataTypeAddress + 40 * initialObjectsOffset,
+				stringDataTypeNameAddress = dataTypeDataTypeAddress + 41 * initialObjectsOffset;
+			_objects[objectDataTypeNameAddress] = objectDataTypeName = new String(this, objectDataTypeNameAddress);
+			_objects[dataTypeDataTypeNameAddress] = dataTypeDataTypeName = new String(this, dataTypeDataTypeNameAddress);
+			_objects[dataTypeMemberDataTypeNameAddress] = dataTypeMemberDataTypeName = new String(this, dataTypeMemberDataTypeNameAddress);
+			_objects[dataTypeFieldDataTypeNameAddress] = dataTypeFieldDataTypeName = new String(this, dataTypeFieldDataTypeNameAddress);
+			_objects[dataTypeMethodDataTypeNameAddress] = dataTypeMethodDataTypeName = new String(this, dataTypeMethodDataTypeNameAddress);
+			_objects[dataTypePropertyDataTypeNameAddress] = dataTypePropertyDataTypeName = new String(this, dataTypePropertyDataTypeNameAddress);
+			_objects[dataTypeEventDataTypeNameAddress] = dataTypeEventDataTypeName = new String(this, dataTypeEventDataTypeNameAddress);
+			_objects[dataTypeConstructorDataTypeNameAddress] = dataTypeConstructorDataTypeName = new String(this, dataTypeConstructorDataTypeNameAddress);
+			_objects[integerDataTypeNameAddress] = integerDataTypeName = new String(this, integerDataTypeNameAddress);
+			_objects[arrayDataTypeNameAddress] = arrayDataTypeName = new String(this, arrayDataTypeNameAddress);
+			_objects[charDataTypeNameAddress] = charDataTypeName = new String(this, charDataTypeNameAddress);
+			_objects[stringDataTypeNameAddress] = stringDataTypeName = new String(this, stringDataTypeNameAddress);
+
 			// tags for debug purpose
-			ObjectDataType.Tag = "Object DataType";
-			DataTypeDataType.Tag = "DataType DataType";
-			DataTypeMemberDataType.Tag = "DataTypeMember DataType";
-			DataTypeFieldDataType.Tag = "DataTypeField DataType";
-			DataTypeMethodDataType.Tag = "DataTypeMethod DataType";
-			DataTypePropertyDataType.Tag = "DataTypeProperty DataType";
-			DataTypeEventDataType.Tag = "DataTypeEvent DataType";
-			DataTypeConstructorDataType.Tag = "DataTypeConstructor DataType";
-			IntegerDataType.Tag = "Integer DataType";
-			ArrayDataType.Tag = "Array DataType";
-			CharDataType.Tag = "Char DataType";
-			StringDataType.Tag = "String DataType";
+			ObjectDataType.Tag = ObjectDataType.Name.ToString();
+			DataTypeDataType.Tag = DataTypeDataType.Name.ToString();
+			DataTypeMemberDataType.Tag = DataTypeMemberDataType.Name.ToString();
+			DataTypeFieldDataType.Tag = DataTypeFieldDataType.Name.ToString();
+			DataTypeMethodDataType.Tag = DataTypeMethodDataType.Name.ToString();
+			DataTypePropertyDataType.Tag = DataTypePropertyDataType.Name.ToString();
+			DataTypeEventDataType.Tag = DataTypeEventDataType.Name.ToString();
+			DataTypeConstructorDataType.Tag = DataTypeConstructorDataType.Name.ToString();
+			IntegerDataType.Tag = IntegerDataType.Name.ToString();
+			ArrayDataType.Tag = ArrayDataType.Name.ToString();
+			CharDataType.Tag = CharDataType.Name.ToString();
+			StringDataType.Tag = StringDataType.Name.ToString();
 
 			emptyArrayOfFields.Tag = "Empty array of Fields";
 			emptyArrayOfMethods.Tag = "Empty array of Methods";
