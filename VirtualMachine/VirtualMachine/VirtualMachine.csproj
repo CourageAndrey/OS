@@ -64,8 +64,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Core\Array.cs" />
+    <Compile Include="Core\Char.cs" />
     <Compile Include="Core\Integer.cs" />
     <Compile Include="Core\Memory.cs" />
+    <Compile Include="Core\String.cs" />
     <Compile Include="Reflection\DataTypeConstructor.cs" />
     <Compile Include="Reflection\DataTypeEvent.cs" />
     <Compile Include="Reflection\DataTypeField.cs" />

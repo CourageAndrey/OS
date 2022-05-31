@@ -33,7 +33,9 @@ namespace VirtualMachine.Core
 			DataTypeConstructorDataType,
 
 			IntegerDataType,
-			ArrayDataType;
+			ArrayDataType,
+			CharDataType,
+			StringDataType;
 
 		#endregion
 
@@ -102,6 +104,14 @@ namespace VirtualMachine.Core
 
 			MemoryAddress arrayDataTypeAddress = dataTypeDataTypeAddress + 8 * initialObjectsOffset;
 			_objects[arrayDataTypeAddress] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
+
+			// load char and string data types
+			MemoryAddress charDataTypeAddress = dataTypeDataTypeAddress + 21 * initialObjectsOffset;
+			_objects[charDataTypeAddress] = CharDataType = new DataType(this, charDataTypeAddress);
+
+			MemoryAddress stringDataTypeAddress = dataTypeDataTypeAddress + 22 * initialObjectsOffset;
+			_objects[stringDataTypeAddress] = StringDataType = new DataType(this, stringDataTypeAddress);
+			
 
 			// load empty arrays
 			Array<DataTypeField> emptyArrayOfFields;
@@ -172,6 +182,8 @@ namespace VirtualMachine.Core
 			DataTypeConstructorDataType.Tag = "DataTypeConstructor DataType";
 			IntegerDataType.Tag = "Integer DataType";
 			ArrayDataType.Tag = "Array DataType";
+			CharDataType.Tag = "Char DataType";
+			StringDataType.Tag = "String DataType";
 
 			emptyArrayOfFields.Tag = "Empty array of Fields";
 			emptyArrayOfMethods.Tag = "Empty array of Methods";
@@ -207,6 +219,10 @@ namespace VirtualMachine.Core
 				if (typeof(ObjectT) == typeof(Integer))
 				{
 					return new Integer(this, address) as ObjectT;
+				}
+				else if (typeof(ObjectT) == typeof(Char))
+				{
+					return new Char(this, address) as ObjectT;
 				}
 				else
 				{
