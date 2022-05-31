@@ -16,8 +16,9 @@ namespace VirtualMachine.Core
 		protected internal const MemoryOffset FieldOffsetProperties = FieldsCountOfObjectClass + 3;
 		protected internal const MemoryOffset FieldOffsetEvents = FieldsCountOfObjectClass + 4;
 		protected internal const MemoryOffset FieldOffsetConstructors = FieldsCountOfObjectClass + 5;
+		protected internal const MemoryOffset FieldOffsetName = FieldsCountOfObjectClass + 6;
 
-		protected internal const MemoryOffset FieldsCountOfDataTypeClass = 6;
+		protected internal const MemoryOffset FieldsCountOfDataTypeClass = 7;
 		protected internal const MemoryOffset TotalFieldsCountOfDataTypeClass = TotalFieldsCountOfObjectClass + FieldsCountOfDataTypeClass;
 
 		public override int DataSize
@@ -40,6 +41,9 @@ namespace VirtualMachine.Core
 
 		public Array<DataTypeConstructor> Constructors
 		{ get { return GetFieldValue<Array<DataTypeConstructor>>(FieldOffsetConstructors); } }
+
+		public String Name
+		{ get { return GetFieldValue<String>(FieldOffsetName); } }
 
 		#endregion
 
