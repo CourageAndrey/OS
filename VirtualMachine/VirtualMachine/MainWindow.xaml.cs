@@ -278,6 +278,30 @@ namespace VirtualMachine
 				0000, // 0218
 				0000, // 0219
 				0000, // 0220
+
+				//--- CharDataType ---
+				0011, // 0221 DataType > DataTypeDataType
+				0001, // 0222 BaseType > ObjectDataType
+				0101, // 0223 Fields > Empty array of Fields
+				0103, // 0224 Methods > Empty array of Methods
+				0105, // 0225 Properties > Empty array of Properties
+				0107, // 0226 Events > Empty array of Events
+				0109, // 0227 Constructors > Empty array of Constructors
+				0000, // 0228
+				0000, // 0229
+				0000, // 0230
+
+				//--- StringDataType ---
+				0011, // 0231 DataType > DataTypeDataType
+				0091, // 0232 BaseType > ArrayDataType
+				0101, // 0233 Fields > Empty array of Fields
+				0103, // 0234 Methods > Empty array of Methods
+				0105, // 0235 Properties > Empty array of Properties
+				0107, // 0236 Events > Empty array of Events
+				0109, // 0237 Constructors > Empty array of Constructors
+				0000, // 0238
+				0000, // 0239
+				0000, // 0240
 			}, 1);
 
 			var text = new System.Text.StringBuilder();
