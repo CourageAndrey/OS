@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Core\Array.cs" />
     <Compile Include="Core\Char.cs" />
+    <Compile Include="Core\Environment.cs" />
     <Compile Include="Core\Integer.cs" />
     <Compile Include="Core\Memory.cs" />
     <Compile Include="Core\String.cs" />
