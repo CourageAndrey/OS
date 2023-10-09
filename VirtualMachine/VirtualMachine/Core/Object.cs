@@ -4,18 +4,27 @@ using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public abstract class Object
+	public class Object
 	{
 		#region Properties
 
 		protected readonly Memory _memory;
 		protected readonly MemoryAddress _memoryAddress;
 
-		public abstract DataType GetDataType();
+		public virtual DataType GetDataType()
+		{
+			return _memory.ObjectDataType;
+		}
 
-		public abstract MemoryOffset GetVariableSize();
+		public virtual MemoryOffset GetVariableSize()
+		{
+			return 1; // one memory word-length pointer
+		}
 
-		public abstract MemoryOffset GetDataSize();
+		public virtual MemoryOffset GetDataSize()
+		{
+			return 0;
+		}
 
 		internal string Tag;
 
