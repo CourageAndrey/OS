@@ -21,7 +21,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		protected Object(Memory memory, MemoryAddress memoryAddress)
 		{
@@ -64,7 +64,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		protected ClassInstance(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)

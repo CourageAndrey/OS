@@ -49,7 +49,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		public DataType(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)

@@ -21,7 +21,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		public Integer(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress, memory.IntegerDataType)

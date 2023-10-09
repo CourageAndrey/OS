@@ -6,7 +6,7 @@ namespace VirtualMachine.Core
 {
 	public class String : Array<Char>
 	{
-		#region Conctructors
+		#region Constructors
 
 		public String(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress, 1) // Char."DataSize"

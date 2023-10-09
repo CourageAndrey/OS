@@ -20,7 +20,7 @@ namespace VirtualMachine.Reflection
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		public DataTypeMethod(Core.Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)

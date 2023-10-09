@@ -18,7 +18,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		protected Array(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)
@@ -44,7 +44,7 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		#region Conctructors
+		#region Constructors
 
 		public Array(Memory memory, MemoryAddress memoryAddress, MemoryOffset itemDataSize)
 			: base(memory, memoryAddress)
