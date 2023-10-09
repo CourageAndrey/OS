@@ -11,14 +11,11 @@ namespace VirtualMachine.Core
 		protected readonly Memory _memory;
 		protected readonly MemoryAddress _memoryAddress;
 
-		public abstract DataType DataType
-		{ get; }
+		public abstract DataType GetDataType();
 
-		public abstract MemoryOffset VariableSize
-		{ get; }
+		public abstract MemoryOffset GetVariableSize();
 
-		public abstract MemoryOffset DataSize
-		{ get; }
+		public abstract MemoryOffset GetDataSize();
 
 		internal string Tag;
 
@@ -55,11 +52,15 @@ namespace VirtualMachine.Core
 		protected internal const MemoryOffset FieldsCountOfObjectClass = 1;
 		protected internal const MemoryOffset TotalFieldsCountOfObjectClass = FieldsCountOfObjectClass;
 
-		public override DataType DataType
-		{ get { return GetFieldValue<DataType>(FieldOffsetDataType); } }
+		public override DataType GetDataType()
+		{
+			return GetFieldValue<DataType>(FieldOffsetDataType);
+		}
 
-		public override MemoryOffset VariableSize
-		{ get { return 1; } } // one memory word-length pointer
+		public override MemoryOffset GetVariableSize()
+		{
+			return 1; // one memory word-length pointer
+		}
 
 		#endregion
 
@@ -74,13 +75,17 @@ namespace VirtualMachine.Core
 
 	public abstract class Structure : Object
 	{
-		public override DataType DataType
-		{ get { return _dataType; } }
+		public override DataType GetDataType()
+		{
+			return _dataType;
+		}
 
 		private readonly DataType _dataType;
 
-		public override MemoryOffset VariableSize
-		{ get { return DataSize; } } // because structures are stored by values
+		public override MemoryOffset GetVariableSize()
+		{
+			return GetDataSize(); // because structures are stored by values
+		}
 
 		protected Structure(Memory memory, MemoryAddress memoryAddress, DataType dataType)
 			: base(memory, memoryAddress)

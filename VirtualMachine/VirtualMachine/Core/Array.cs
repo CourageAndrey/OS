@@ -34,8 +34,10 @@ namespace VirtualMachine.Core
 
 		private readonly MemoryOffset _itemDataSize;
 
-		public override MemoryOffset DataSize
-		{ get { return TotalFieldsCountOfArrayClass + ((MemoryAddress) Length.Value) * _itemDataSize; } }
+		public override MemoryOffset GetDataSize()
+		{
+			return TotalFieldsCountOfArrayClass + ((MemoryAddress) Length.Value) * _itemDataSize;
+		}
 
 		public ItemT this[MemoryAddress index]
 		{ get { return _memory.GetObject<ItemT>(_memoryAddress + TotalFieldsCountOfArrayClass + index * _itemDataSize); } }

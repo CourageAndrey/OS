@@ -14,7 +14,7 @@ namespace VirtualMachine
 			var memory = new Core.Memory(data.Item1, data.Item2);
 
 			var text = new System.Text.StringBuilder();
-			var array = memory.ObjectDataType.DataType.Fields;
+			var array = memory.ObjectDataType.GetDataType().Fields;
 
 			for (MemoryWord f = 0; f < array.Length.Value; f++)
 			{
