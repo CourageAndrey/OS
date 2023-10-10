@@ -1,4 +1,5 @@
-﻿using VirtualMachine.Reflection;
+﻿using System.Linq;
+using VirtualMachine.Reflection;
 
 using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
@@ -292,6 +293,13 @@ namespace VirtualMachine.Core
 					throw new System.Exception("There is no object with such address.");
 				}
 			}
+		}
+
+		public MemoryAddress GetNextFreeAddress()
+		{
+			MemoryAddress lastStartAddress = _objects.Keys.Max();
+			var lastObject  = _objects[lastStartAddress];
+			return lastStartAddress + lastObject.GetDataSize();
 		}
 	}
 }
