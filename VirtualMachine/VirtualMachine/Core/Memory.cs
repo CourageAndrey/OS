@@ -18,7 +18,7 @@ namespace VirtualMachine.Core
 		public MemoryAddress Size
 		{ get { return Cells.Length; } }
 
-		private readonly System.Collections.Generic.IDictionary<MemoryAddress, Object> _objects;
+		internal readonly System.Collections.Generic.IDictionary<MemoryAddress, Object> _objects;
 
 		public readonly DataType
 			ObjectDataType,

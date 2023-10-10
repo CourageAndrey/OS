@@ -32,10 +32,17 @@ namespace VirtualMachine.Core
 
 		#region Constructors
 
-		protected Object(Memory memory, MemoryAddress memoryAddress)
+		public Object(Memory memory, MemoryAddress memoryAddress)
 		{
 			_memory = memory;
 			_memoryAddress = memoryAddress;
+		}
+
+		public Object(Memory memory)
+		{
+			_memory = memory;
+			_memoryAddress = memory.GetNextFreeAddress();
+			_memory._objects[_memoryAddress] = this;
 		}
 
 		#endregion
@@ -79,6 +86,12 @@ namespace VirtualMachine.Core
 			: base(memory, memoryAddress)
 		{ }
 
+		protected ClassInstance(Memory memory, DataType dataType)
+			: base(memory)
+		{
+			_memory.Cells[_memoryAddress + FieldOffsetDataType] = (MemoryWord) dataType._memoryAddress;
+		}
+
 		#endregion
 	}
 
@@ -101,6 +114,10 @@ namespace VirtualMachine.Core
 		{
 			_dataType = dataType;
 		}
+
+		protected Structure(Memory memory)
+			: base(memory)
+		{ }
 
 		public static StructT TypeCast<StructT>(Memory memory, MemoryAddress memoryAddress)
 			where StructT : Structure

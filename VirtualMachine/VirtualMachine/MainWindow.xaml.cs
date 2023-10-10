@@ -1,4 +1,5 @@
-﻿using MemoryAddress = System.Int32;
+﻿using VirtualMachine.Core;
+using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
 using MemoryWord = System.UInt64;
 
@@ -20,6 +21,9 @@ namespace VirtualMachine
 			{
 				text.AppendLine(array[(int) f].Tag);
 			}
+
+			text.AppendLine(new Integer(memory, (MemoryWord) 123).ToString());
+			text.AppendLine(new Char(memory, 'A').ToString());
 
 			Content = text;
 		}

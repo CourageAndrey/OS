@@ -27,6 +27,16 @@ namespace VirtualMachine.Core
 			: base(memory, memoryAddress, memory.IntegerDataType)
 		{ }
 
+		public Char(Memory memory, MemoryWord value = 0)
+			: base(memory)
+		{
+			Value = value;
+		}
+
+		public Char(Memory memory, char value = '\0')
+			: this(memory, (MemoryWord) value)
+		{ }
+
 		#endregion
 
 		public override string ToString()
