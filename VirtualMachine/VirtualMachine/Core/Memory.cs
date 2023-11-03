@@ -18,7 +18,7 @@ namespace VirtualMachine.Core
 		public MemoryAddress Size
 		{ get { return Cells.Length; } }
 
-		internal readonly System.Collections.Generic.IDictionary<MemoryAddress, Object> _objects;
+		internal readonly System.Collections.Generic.IDictionary<MemoryAddress, Object> Objects;
 
 		public readonly DataType
 			ObjectDataType,
@@ -72,14 +72,14 @@ namespace VirtualMachine.Core
 			}
 
 			// prepare objects
-			_objects = new System.Collections.Generic.Dictionary<MemoryAddress, Object>();
+			Objects = new System.Collections.Generic.Dictionary<MemoryAddress, Object>();
 
 			// load root Object data type
-			_objects[objectDataTypeAddress] = ObjectDataType = new DataType(this, objectDataTypeAddress);
+			Objects[objectDataTypeAddress] = ObjectDataType = new DataType(this, objectDataTypeAddress);
 
 			// load DataType data type
 			MemoryAddress dataTypeDataTypeAddress = (MemoryAddress) cells[objectDataTypeAddress];
-			_objects[dataTypeDataTypeAddress] = DataTypeDataType = new DataType(this, dataTypeDataTypeAddress);
+			Objects[dataTypeDataTypeAddress] = DataTypeDataType = new DataType(this, dataTypeDataTypeAddress);
 
 			// load Reflection data types
 #warning Temporary calculation (while members list is unfinished)
@@ -91,26 +91,26 @@ namespace VirtualMachine.Core
 				dataTypePropertyDataTypeAddress = dataTypeDataTypeAddress + 4 * initialObjectsOffset,
 				dataTypeEventDataTypeAddress = dataTypeDataTypeAddress + 5 * initialObjectsOffset,
 				dataTypeConstructorDataTypeAddress = dataTypeDataTypeAddress + 6 * initialObjectsOffset;
-			_objects[dataTypeMemberDataTypeAddress] = DataTypeMemberDataType = new DataType(this, dataTypeMemberDataTypeAddress);
-			_objects[dataTypeFieldDataTypeAddress] = DataTypeFieldDataType = new DataType(this, dataTypeFieldDataTypeAddress);
-			_objects[dataTypeMethodDataTypeAddress] = DataTypeMethodDataType = new DataType(this, dataTypeMethodDataTypeAddress);
-			_objects[dataTypePropertyDataTypeAddress] = DataTypePropertyDataType = new DataType(this, dataTypePropertyDataTypeAddress);
-			_objects[dataTypeEventDataTypeAddress] = DataTypeEventDataType = new DataType(this, dataTypeEventDataTypeAddress);
-			_objects[dataTypeConstructorDataTypeAddress] = DataTypeConstructorDataType = new DataType(this, dataTypeConstructorDataTypeAddress);
+			Objects[dataTypeMemberDataTypeAddress] = DataTypeMemberDataType = new DataType(this, dataTypeMemberDataTypeAddress);
+			Objects[dataTypeFieldDataTypeAddress] = DataTypeFieldDataType = new DataType(this, dataTypeFieldDataTypeAddress);
+			Objects[dataTypeMethodDataTypeAddress] = DataTypeMethodDataType = new DataType(this, dataTypeMethodDataTypeAddress);
+			Objects[dataTypePropertyDataTypeAddress] = DataTypePropertyDataType = new DataType(this, dataTypePropertyDataTypeAddress);
+			Objects[dataTypeEventDataTypeAddress] = DataTypeEventDataType = new DataType(this, dataTypeEventDataTypeAddress);
+			Objects[dataTypeConstructorDataTypeAddress] = DataTypeConstructorDataType = new DataType(this, dataTypeConstructorDataTypeAddress);
 
 			// load int and array data types
 			MemoryAddress integerDataTypeAddress = dataTypeDataTypeAddress + 7 * initialObjectsOffset;
-			_objects[integerDataTypeAddress] = IntegerDataType = new DataType(this, integerDataTypeAddress);
+			Objects[integerDataTypeAddress] = IntegerDataType = new DataType(this, integerDataTypeAddress);
 
 			MemoryAddress arrayDataTypeAddress = dataTypeDataTypeAddress + 8 * initialObjectsOffset;
-			_objects[arrayDataTypeAddress] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
+			Objects[arrayDataTypeAddress] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
 
 			// load char and string data types
 			MemoryAddress charDataTypeAddress = dataTypeDataTypeAddress + 21 * initialObjectsOffset;
-			_objects[charDataTypeAddress] = CharDataType = new DataType(this, charDataTypeAddress);
+			Objects[charDataTypeAddress] = CharDataType = new DataType(this, charDataTypeAddress);
 
 			MemoryAddress stringDataTypeAddress = dataTypeDataTypeAddress + 22 * initialObjectsOffset;
-			_objects[stringDataTypeAddress] = StringDataType = new DataType(this, stringDataTypeAddress);
+			Objects[stringDataTypeAddress] = StringDataType = new DataType(this, stringDataTypeAddress);
 
 			// load empty arrays
 			Array<DataTypeField> emptyArrayOfFields;
@@ -123,11 +123,11 @@ namespace VirtualMachine.Core
 			MemoryAddress emptyArrayOfPropertiesAddress = emptyArrayOfFieldsAddress + 4;
 			MemoryAddress emptyArrayOfEventsAddress = emptyArrayOfFieldsAddress + 6;
 			MemoryAddress emptyArrayOfConstructorsAddress = emptyArrayOfFieldsAddress + 8;
-			_objects[emptyArrayOfFieldsAddress] = emptyArrayOfFields = new Array<DataTypeField>(this, emptyArrayOfFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			_objects[emptyArrayOfMethodsAddress] = emptyArrayOfMethods = new Array<DataTypeMethod>(this, emptyArrayOfMethodsAddress, DataTypeMethod.TotalFieldsCountOfDataTypeMethodClass);
-			_objects[emptyArrayOfPropertiesAddress] = emptyArrayOfProperties = new Array<DataTypeProperty>(this, emptyArrayOfPropertiesAddress, DataTypeProperty.TotalFieldsCountOfDataTypePropertyClass);
-			_objects[emptyArrayOfEventsAddress] = emptyArrayOfEvents = new Array<DataTypeEvent>(this, emptyArrayOfEventsAddress, DataTypeEvent.TotalFieldsCountOfDataTypeEventClass);
-			_objects[emptyArrayOfConstructorsAddress] = emptyArrayOfConstructors = new Array<DataTypeConstructor>(this, emptyArrayOfConstructorsAddress, DataTypeConstructor.TotalFieldsCountOfDataTypeConstructorClass);
+			Objects[emptyArrayOfFieldsAddress] = emptyArrayOfFields = new Array<DataTypeField>(this, emptyArrayOfFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			Objects[emptyArrayOfMethodsAddress] = emptyArrayOfMethods = new Array<DataTypeMethod>(this, emptyArrayOfMethodsAddress, DataTypeMethod.TotalFieldsCountOfDataTypeMethodClass);
+			Objects[emptyArrayOfPropertiesAddress] = emptyArrayOfProperties = new Array<DataTypeProperty>(this, emptyArrayOfPropertiesAddress, DataTypeProperty.TotalFieldsCountOfDataTypePropertyClass);
+			Objects[emptyArrayOfEventsAddress] = emptyArrayOfEvents = new Array<DataTypeEvent>(this, emptyArrayOfEventsAddress, DataTypeEvent.TotalFieldsCountOfDataTypeEventClass);
+			Objects[emptyArrayOfConstructorsAddress] = emptyArrayOfConstructors = new Array<DataTypeConstructor>(this, emptyArrayOfConstructorsAddress, DataTypeConstructor.TotalFieldsCountOfDataTypeConstructorClass);
 
 			// load fields arrays
 			Array
@@ -138,9 +138,9 @@ namespace VirtualMachine.Core
 				arrayObjectFieldsAddress = dataTypeDataTypeAddress + 10 * initialObjectsOffset,
 				arrayTypeFieldsAddress = dataTypeDataTypeAddress + 11 * initialObjectsOffset,
 				arrayArrayFieldsAddress = dataTypeDataTypeAddress + 12 * initialObjectsOffset;
-			_objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array<DataTypeField>(this, arrayObjectFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			_objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array<DataTypeField>(this, arrayTypeFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			_objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array<DataTypeField>(this, arrayArrayFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			Objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array<DataTypeField>(this, arrayObjectFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			Objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array<DataTypeField>(this, arrayTypeFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			Objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array<DataTypeField>(this, arrayArrayFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
 
 			// load fields
 			DataTypeField
@@ -161,14 +161,14 @@ namespace VirtualMachine.Core
 				dataTypeEventsFieldAddress = dataTypeDataTypeAddress + 18 * initialObjectsOffset,
 				dataTypeConstructorsFieldAddress = dataTypeDataTypeAddress + 19 * initialObjectsOffset,
 				arrayLengthFieldAddress = dataTypeDataTypeAddress + 20 * initialObjectsOffset;
-			_objects[objectDataTypeFieldAddress] = objectDataTypeField = new DataTypeField(this, objectDataTypeFieldAddress);
-			_objects[dataTypeBaseTypeFieldAddress] = dataTypeBaseTypeField = new DataTypeField(this, dataTypeBaseTypeFieldAddress);
-			_objects[dataTypeFieldsFieldAddress] = dataTypeFieldsField = new DataTypeField(this, dataTypeFieldsFieldAddress);
-			_objects[dataTypeMethodsFieldAddress] = dataTypeMethodsField = new DataTypeField(this, dataTypeMethodsFieldAddress);
-			_objects[dataTypePropertiesFieldAddress] = dataTypePropertiesField = new DataTypeField(this, dataTypePropertiesFieldAddress);
-			_objects[dataTypeEventsFieldAddress] = dataTypeEventsField = new DataTypeField(this, dataTypeEventsFieldAddress);
-			_objects[dataTypeConstructorsFieldAddress] = dataTypeConstructorsField = new DataTypeField(this, dataTypeConstructorsFieldAddress);
-			_objects[arrayLengthFieldAddress] = arrayLengthField = new DataTypeField(this, arrayLengthFieldAddress);
+			Objects[objectDataTypeFieldAddress] = objectDataTypeField = new DataTypeField(this, objectDataTypeFieldAddress);
+			Objects[dataTypeBaseTypeFieldAddress] = dataTypeBaseTypeField = new DataTypeField(this, dataTypeBaseTypeFieldAddress);
+			Objects[dataTypeFieldsFieldAddress] = dataTypeFieldsField = new DataTypeField(this, dataTypeFieldsFieldAddress);
+			Objects[dataTypeMethodsFieldAddress] = dataTypeMethodsField = new DataTypeField(this, dataTypeMethodsFieldAddress);
+			Objects[dataTypePropertiesFieldAddress] = dataTypePropertiesField = new DataTypeField(this, dataTypePropertiesFieldAddress);
+			Objects[dataTypeEventsFieldAddress] = dataTypeEventsField = new DataTypeField(this, dataTypeEventsFieldAddress);
+			Objects[dataTypeConstructorsFieldAddress] = dataTypeConstructorsField = new DataTypeField(this, dataTypeConstructorsFieldAddress);
+			Objects[arrayLengthFieldAddress] = arrayLengthField = new DataTypeField(this, arrayLengthFieldAddress);
 
 			String
 				objectDataTypeName,
@@ -196,18 +196,18 @@ namespace VirtualMachine.Core
 				arrayDataTypeNameAddress = dataTypeDataTypeAddress + 39 * initialObjectsOffset,
 				charDataTypeNameAddress = dataTypeDataTypeAddress + 40 * initialObjectsOffset,
 				stringDataTypeNameAddress = dataTypeDataTypeAddress + 41 * initialObjectsOffset;
-			_objects[objectDataTypeNameAddress] = objectDataTypeName = new String(this, objectDataTypeNameAddress);
-			_objects[dataTypeDataTypeNameAddress] = dataTypeDataTypeName = new String(this, dataTypeDataTypeNameAddress);
-			_objects[dataTypeMemberDataTypeNameAddress] = dataTypeMemberDataTypeName = new String(this, dataTypeMemberDataTypeNameAddress);
-			_objects[dataTypeFieldDataTypeNameAddress] = dataTypeFieldDataTypeName = new String(this, dataTypeFieldDataTypeNameAddress);
-			_objects[dataTypeMethodDataTypeNameAddress] = dataTypeMethodDataTypeName = new String(this, dataTypeMethodDataTypeNameAddress);
-			_objects[dataTypePropertyDataTypeNameAddress] = dataTypePropertyDataTypeName = new String(this, dataTypePropertyDataTypeNameAddress);
-			_objects[dataTypeEventDataTypeNameAddress] = dataTypeEventDataTypeName = new String(this, dataTypeEventDataTypeNameAddress);
-			_objects[dataTypeConstructorDataTypeNameAddress] = dataTypeConstructorDataTypeName = new String(this, dataTypeConstructorDataTypeNameAddress);
-			_objects[integerDataTypeNameAddress] = integerDataTypeName = new String(this, integerDataTypeNameAddress);
-			_objects[arrayDataTypeNameAddress] = arrayDataTypeName = new String(this, arrayDataTypeNameAddress);
-			_objects[charDataTypeNameAddress] = charDataTypeName = new String(this, charDataTypeNameAddress);
-			_objects[stringDataTypeNameAddress] = stringDataTypeName = new String(this, stringDataTypeNameAddress);
+			Objects[objectDataTypeNameAddress] = objectDataTypeName = new String(this, objectDataTypeNameAddress);
+			Objects[dataTypeDataTypeNameAddress] = dataTypeDataTypeName = new String(this, dataTypeDataTypeNameAddress);
+			Objects[dataTypeMemberDataTypeNameAddress] = dataTypeMemberDataTypeName = new String(this, dataTypeMemberDataTypeNameAddress);
+			Objects[dataTypeFieldDataTypeNameAddress] = dataTypeFieldDataTypeName = new String(this, dataTypeFieldDataTypeNameAddress);
+			Objects[dataTypeMethodDataTypeNameAddress] = dataTypeMethodDataTypeName = new String(this, dataTypeMethodDataTypeNameAddress);
+			Objects[dataTypePropertyDataTypeNameAddress] = dataTypePropertyDataTypeName = new String(this, dataTypePropertyDataTypeNameAddress);
+			Objects[dataTypeEventDataTypeNameAddress] = dataTypeEventDataTypeName = new String(this, dataTypeEventDataTypeNameAddress);
+			Objects[dataTypeConstructorDataTypeNameAddress] = dataTypeConstructorDataTypeName = new String(this, dataTypeConstructorDataTypeNameAddress);
+			Objects[integerDataTypeNameAddress] = integerDataTypeName = new String(this, integerDataTypeNameAddress);
+			Objects[arrayDataTypeNameAddress] = arrayDataTypeName = new String(this, arrayDataTypeNameAddress);
+			Objects[charDataTypeNameAddress] = charDataTypeName = new String(this, charDataTypeNameAddress);
+			Objects[stringDataTypeNameAddress] = stringDataTypeName = new String(this, stringDataTypeNameAddress);
 
 			// tags for debug purpose
 			ObjectDataType.Tag = ObjectDataType.Name.ToString();
@@ -277,7 +277,7 @@ namespace VirtualMachine.Core
 				}
 
 				Object result;
-				if (_objects.TryGetValue(address, out result))
+				if (Objects.TryGetValue(address, out result))
 				{
 					if (typeof(ObjectT).IsAssignableFrom(result.GetType()))
 					{
@@ -297,8 +297,8 @@ namespace VirtualMachine.Core
 
 		public MemoryAddress GetNextFreeAddress()
 		{
-			MemoryAddress lastStartAddress = _objects.Keys.Max();
-			var lastObject  = _objects[lastStartAddress];
+			MemoryAddress lastStartAddress = Objects.Keys.Max();
+			var lastObject  = Objects[lastStartAddress];
 			return lastStartAddress + lastObject.GetDataSize();
 		}
 	}

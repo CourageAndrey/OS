@@ -33,7 +33,7 @@ namespace VirtualMachine.Core
 		{
 			_memory = memory;
 			_memoryAddress = memory.GetNextFreeAddress();
-			_memory._objects[_memoryAddress] = this;
+			_memory.Objects[_memoryAddress] = this;
 		}
 
 		#endregion
