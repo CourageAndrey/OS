@@ -8,8 +8,8 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		protected readonly Memory _memory;
-		protected readonly MemoryAddress _memoryAddress;
+		protected internal readonly Memory _memory;
+		protected internal readonly MemoryAddress _memoryAddress;
 
 		public virtual DataType GetDataType()
 		{
