@@ -4,27 +4,18 @@ using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Object
+	public abstract class Object
 	{
 		#region Properties
 
 		protected internal readonly Memory _memory;
 		protected internal readonly MemoryAddress _memoryAddress;
 
-		public virtual DataType GetDataType()
-		{
-			return _memory.ObjectDataType;
-		}
+		public abstract DataType GetDataType();
 
-		public virtual MemoryOffset GetVariableSize()
-		{
-			return 1; // one memory word-length pointer
-		}
+		public abstract MemoryOffset GetVariableSize();
 
-		public virtual MemoryOffset GetDataSize()
-		{
-			return 0;
-		}
+		public abstract MemoryOffset GetDataSize();
 
 		internal string Tag;
 
@@ -32,13 +23,13 @@ namespace VirtualMachine.Core
 
 		#region Constructors
 
-		public Object(Memory memory, MemoryAddress memoryAddress)
+		protected Object(Memory memory, MemoryAddress memoryAddress)
 		{
 			_memory = memory;
 			_memoryAddress = memoryAddress;
 		}
 
-		public Object(Memory memory)
+		protected Object(Memory memory)
 		{
 			_memory = memory;
 			_memoryAddress = memory.GetNextFreeAddress();
@@ -59,7 +50,7 @@ namespace VirtualMachine.Core
 		}
 	}
 
-	public abstract class ClassInstance : Object
+	public class ClassInstance : Object
 	{
 		#region Properties
 
@@ -78,15 +69,20 @@ namespace VirtualMachine.Core
 			return 1; // one memory word-length pointer
 		}
 
+		public override MemoryOffset GetDataSize()
+		{
+			return TotalFieldsCountOfObjectClass;
+		}
+
 		#endregion
 
 		#region Constructors
 
-		protected ClassInstance(Memory memory, MemoryAddress memoryAddress)
+		public ClassInstance(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)
 		{ }
 
-		protected ClassInstance(Memory memory, DataType dataType)
+		public ClassInstance(Memory memory, DataType dataType)
 			: base(memory)
 		{
 			_memory.Cells[_memoryAddress + FieldOffsetDataType] = (MemoryWord) dataType._memoryAddress;

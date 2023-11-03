@@ -6,13 +6,8 @@ namespace VirtualMachine.Tests.Core
 {
 	public class ObjectTests
 	{
-		[SetUp]
-		public void Setup()
-		{
-		}
-
 		[Test]
-		public void Test1()
+		public void GivenMemory_WhenCreateNewObject_ThenCreateNewEmptyObject()
 		{
 			// arrange
 			var data = Environment.LoadSample();
@@ -21,10 +16,13 @@ namespace VirtualMachine.Tests.Core
 			var freeAddress = memory.GetNextFreeAddress();
 
 			// act
-			var @object = new Object(memory);
+			var @object = new ClassInstance(memory, memory.ObjectDataType);
 
 			// assert
 			Assert.AreSame(memory, @object._memory);
+			Assert.AreSame(memory.ObjectDataType, @object.GetDataType());
+			Assert.AreEqual(1, @object.GetDataSize());
+			Assert.AreEqual(1, @object.GetVariableSize());
 			Assert.AreEqual(freeAddress, @object._memoryAddress);
 			Assert.Greater(memory.GetNextFreeAddress(), freeAddress);
 		}
