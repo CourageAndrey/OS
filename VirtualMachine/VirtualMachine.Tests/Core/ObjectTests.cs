@@ -26,5 +26,21 @@ namespace VirtualMachine.Tests.Core
 			Assert.AreEqual(freeAddress, @object._memoryAddress);
 			Assert.Greater(memory.GetNextFreeAddress(), freeAddress);
 		}
+
+		[Test]
+		public void GivenObject_WhenCheckToString_ThenReturnTag()
+		{
+			// arrange
+			var data = Environment.LoadSample();
+			var memory = new Memory(data.Item1, data.Item2);
+			var @object = new ClassInstance(memory, memory.ObjectDataType);
+
+			// act & assert
+			Assert.IsNull(@object.Tag);
+			Assert.AreEqual(@object.GetType().FullName, @object.ToString());
+			@object.Tag = "Test";
+			Assert.AreEqual("Test", @object.Tag);
+			Assert.AreEqual("Test", @object.ToString());
+		}
 	}
 }
