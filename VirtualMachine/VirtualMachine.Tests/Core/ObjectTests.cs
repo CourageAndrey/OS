@@ -42,5 +42,53 @@ namespace VirtualMachine.Tests.Core
 			Assert.AreEqual("Test", @object.Tag);
 			Assert.AreEqual("Test", @object.ToString());
 		}
+
+		[Test]
+		public void GivenChar_WhenTypeCast_ThenCast()
+		{
+			// arrange
+			var data = Environment.LoadSample();
+			var memory = new Memory(data.Item1, data.Item2);
+
+			var freeAddress = memory.GetNextFreeAddress();
+			memory.Cells[freeAddress] = 123;
+
+			// act
+			var @char = Structure.TypeCast<Char>(memory, freeAddress);
+
+			// assert
+			Assert.AreEqual(123, @char.Value);
+		}
+
+		[Test]
+		public void GivenInteger_WhenTypeCast_ThenCast()
+		{
+			// arrange
+			var data = Environment.LoadSample();
+			var memory = new Memory(data.Item1, data.Item2);
+
+			var freeAddress = memory.GetNextFreeAddress();
+			memory.Cells[freeAddress] = 123;
+
+			// act
+			var integer = Structure.TypeCast<Integer>(memory, freeAddress);
+
+			// assert
+			Assert.AreEqual(123, integer.Value);
+		}
+
+		[Test]
+		public void GivenUnknown_WhenTryToTypeCast_ThenFail()
+		{
+			// arrange
+			var data = Environment.LoadSample();
+			var memory = new Memory(data.Item1, data.Item2);
+
+			var freeAddress = memory.GetNextFreeAddress();
+			var structure = new UnknownStructure(memory, freeAddress);
+
+			// act && assert
+			Assert.Throws<System.InvalidCastException>(() => Structure.TypeCast<UnknownStructure>(memory, structure._memoryAddress));
+		}
 	}
 }

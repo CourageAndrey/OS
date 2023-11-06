@@ -120,6 +120,10 @@ namespace VirtualMachine.Core
 			{
 				return new Integer(memory, memoryAddress) as StructT;
 			}
+			else if (typeof(StructT) == typeof(Char))
+			{
+				return new Char(memory, memoryAddress) as StructT;
+			}
 			else
 			{
 				throw new System.InvalidCastException();
