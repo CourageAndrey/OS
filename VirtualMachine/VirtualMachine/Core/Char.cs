@@ -24,7 +24,7 @@ namespace VirtualMachine.Core
 		#region Constructors
 
 		public Char(Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress, memory.IntegerDataType)
+			: base(memory, memoryAddress, memory.CharDataType)
 		{ }
 
 		public Char(Memory memory, MemoryWord value = 0)
