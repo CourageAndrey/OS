@@ -62,20 +62,20 @@ namespace VirtualMachine.Tests.Core
 			Assert.GreaterOrEqual(memory.Size, Memory.RequiredSize);
 			Assert.AreEqual(memory.Size, memory.Cells.Length);
 
-			var dataTypes = memory.Objects.Values.OfType<DataType>().Select(dt => dt.Name.ToString()).ToHashSet();
+			var dataTypes = memory.Objects.Values.OfType<DataType>().ToHashSet();
 			Assert.AreEqual(12, dataTypes.Count);
-			Assert.IsTrue(dataTypes.Contains("Object"));
-			Assert.IsTrue(dataTypes.Contains("DataType"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeMember"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeField"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeMethod"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeProperty"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeEvent"));
-			Assert.IsTrue(dataTypes.Contains("DataTypeConstructor"));
-			Assert.IsTrue(dataTypes.Contains("Integer"));
-			Assert.IsTrue(dataTypes.Contains("Array"));
-			Assert.IsTrue(dataTypes.Contains("Char"));
-			Assert.IsTrue(dataTypes.Contains("String"));
+			Assert.IsTrue(dataTypes.Contains(memory.ObjectDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeMemberDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeFieldDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeMethodDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypePropertyDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeEventDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.DataTypeConstructorDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.IntegerDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.ArrayDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.CharDataType));
+			Assert.IsTrue(dataTypes.Contains(memory.StringDataType));
 		}
 
 		[Test]
