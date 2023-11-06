@@ -62,7 +62,7 @@ namespace VirtualMachine.Tests.Core
 			Assert.GreaterOrEqual(memory.Size, Memory.RequiredSize);
 			Assert.AreEqual(memory.Size, memory.Cells.Length);
 
-			var dataTypes = memory.Objects.Values.OfType<DataType>().ToHashSet();
+			var dataTypes = memory.Types.Values.ToHashSet();
 			Assert.AreEqual(12, dataTypes.Count);
 			Assert.IsTrue(dataTypes.Contains(memory.ObjectDataType));
 			Assert.IsTrue(dataTypes.Contains(memory.DataTypeDataType));

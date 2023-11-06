@@ -30,7 +30,7 @@ namespace VirtualMachine.Tests.Core
 			var references = new System.Collections.Generic.HashSet<object>();
 
 			// assert
-			foreach (var dataType in memory.Objects.Values.OfType<DataType>().ToList())
+			foreach (var dataType in memory.Types.Values)
 			{
 				CheckForNotNullAndUnique(dataType.Constructors, references);
 				CheckForNotNullAndUnique(dataType.Events, references);

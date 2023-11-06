@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+
 using VirtualMachine.Reflection;
 
 using MemoryAddress = System.Int32;
@@ -19,6 +20,8 @@ namespace VirtualMachine.Core
 		{ get { return Cells.Length; } }
 
 		internal readonly System.Collections.Generic.IDictionary<MemoryAddress, Object> Objects;
+
+		internal readonly System.Collections.Generic.IDictionary<string, DataType> Types;
 
 		public readonly DataType
 			ObjectDataType,
@@ -240,6 +243,11 @@ namespace VirtualMachine.Core
 			dataTypeEventsField.Tag = "DataType Events Field";
 			dataTypeConstructorsField.Tag = "DataType Constructors Field";
 			arrayLengthField.Tag = "Array Length Field";
+
+			// types list
+			Types = Objects.Values.ToList().OfType<DataType>().ToDictionary(
+				type => type.Name.ToString(),
+				type => type);
 		}
 
 		#endregion
