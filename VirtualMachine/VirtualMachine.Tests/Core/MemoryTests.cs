@@ -106,18 +106,6 @@ namespace VirtualMachine.Tests.Core
 			Assert.Throws<System.NotSupportedException>(() => memory.GetObject<UnknownStructure>(1));
 		}
 
-		private class UnknownStructure : Structure
-		{
-			public UnknownStructure(Memory memory, int memoryAddress, DataType dataType)
-				: base(memory, memoryAddress, null)
-			{ }
-
-			public override int GetDataSize()
-			{
-				return 0;
-			}
-		}
-
 		[Test]
 		public void GivenZeroPointer_WhenGetObject_ThenReturnNull()
 		{
