@@ -46,10 +46,10 @@ namespace VirtualMachine.Core
 
 		#region Constructors
 
-		public Array(Memory memory, MemoryAddress memoryAddress, MemoryOffset itemDataSize)
+		public Array(Memory memory, MemoryAddress memoryAddress)
 			: base(memory, memoryAddress)
 		{
-			_itemDataSize = itemDataSize;
+			_itemDataSize = memory.GetDataType<ItemT>().GetVariableSize();
 		}
 
 		#endregion

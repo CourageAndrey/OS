@@ -74,15 +74,16 @@ namespace VirtualMachine.Core
 				throw new System.NullReferenceException("Object type points to NULL.");
 			}
 
-			// prepare objects
+			// prepare types and objects
+			Types = new System.Collections.Generic.Dictionary<string, DataType>();
 			Objects = new System.Collections.Generic.Dictionary<MemoryAddress, Object>();
 
 			// load root Object data type
-			Objects[objectDataTypeAddress] = ObjectDataType = new DataType(this, objectDataTypeAddress);
+			Objects[objectDataTypeAddress] = Types["Object"] = ObjectDataType = new DataType(this, objectDataTypeAddress);
 
 			// load DataType data type
 			MemoryAddress dataTypeDataTypeAddress = (MemoryAddress) cells[objectDataTypeAddress];
-			Objects[dataTypeDataTypeAddress] = DataTypeDataType = new DataType(this, dataTypeDataTypeAddress);
+			Objects[dataTypeDataTypeAddress] = Types["DataType"] = DataTypeDataType = new DataType(this, dataTypeDataTypeAddress);
 
 			// load Reflection data types
 #warning Temporary calculation (while members list is unfinished)
@@ -94,26 +95,26 @@ namespace VirtualMachine.Core
 				dataTypePropertyDataTypeAddress = dataTypeDataTypeAddress + 4 * initialObjectsOffset,
 				dataTypeEventDataTypeAddress = dataTypeDataTypeAddress + 5 * initialObjectsOffset,
 				dataTypeConstructorDataTypeAddress = dataTypeDataTypeAddress + 6 * initialObjectsOffset;
-			Objects[dataTypeMemberDataTypeAddress] = DataTypeMemberDataType = new DataType(this, dataTypeMemberDataTypeAddress);
-			Objects[dataTypeFieldDataTypeAddress] = DataTypeFieldDataType = new DataType(this, dataTypeFieldDataTypeAddress);
-			Objects[dataTypeMethodDataTypeAddress] = DataTypeMethodDataType = new DataType(this, dataTypeMethodDataTypeAddress);
-			Objects[dataTypePropertyDataTypeAddress] = DataTypePropertyDataType = new DataType(this, dataTypePropertyDataTypeAddress);
-			Objects[dataTypeEventDataTypeAddress] = DataTypeEventDataType = new DataType(this, dataTypeEventDataTypeAddress);
-			Objects[dataTypeConstructorDataTypeAddress] = DataTypeConstructorDataType = new DataType(this, dataTypeConstructorDataTypeAddress);
+			Objects[dataTypeMemberDataTypeAddress] = Types["DataTypeMember"] = DataTypeMemberDataType = new DataType(this, dataTypeMemberDataTypeAddress);
+			Objects[dataTypeFieldDataTypeAddress] = Types["DataTypeField"] = DataTypeFieldDataType = new DataType(this, dataTypeFieldDataTypeAddress);
+			Objects[dataTypeMethodDataTypeAddress] = Types["DataTypeMethod"] = DataTypeMethodDataType = new DataType(this, dataTypeMethodDataTypeAddress);
+			Objects[dataTypePropertyDataTypeAddress] = Types["DataTypeProperty"] = DataTypePropertyDataType = new DataType(this, dataTypePropertyDataTypeAddress);
+			Objects[dataTypeEventDataTypeAddress] = Types["DataTypeEvent"] = DataTypeEventDataType = new DataType(this, dataTypeEventDataTypeAddress);
+			Objects[dataTypeConstructorDataTypeAddress] = Types["DataTypeConstructor"] = DataTypeConstructorDataType = new DataType(this, dataTypeConstructorDataTypeAddress);
 
 			// load int and array data types
 			MemoryAddress integerDataTypeAddress = dataTypeDataTypeAddress + 7 * initialObjectsOffset;
-			Objects[integerDataTypeAddress] = IntegerDataType = new DataType(this, integerDataTypeAddress);
+			Objects[integerDataTypeAddress] = Types["Integer"] = IntegerDataType = new DataType(this, integerDataTypeAddress);
 
 			MemoryAddress arrayDataTypeAddress = dataTypeDataTypeAddress + 8 * initialObjectsOffset;
-			Objects[arrayDataTypeAddress] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
+			Objects[arrayDataTypeAddress] = Types["Array"] = ArrayDataType = new DataType(this, arrayDataTypeAddress);
 
 			// load char and string data types
 			MemoryAddress charDataTypeAddress = dataTypeDataTypeAddress + 21 * initialObjectsOffset;
-			Objects[charDataTypeAddress] = CharDataType = new DataType(this, charDataTypeAddress);
+			Objects[charDataTypeAddress] = Types["Char"] = CharDataType = new DataType(this, charDataTypeAddress);
 
 			MemoryAddress stringDataTypeAddress = dataTypeDataTypeAddress + 22 * initialObjectsOffset;
-			Objects[stringDataTypeAddress] = StringDataType = new DataType(this, stringDataTypeAddress);
+			Objects[stringDataTypeAddress] = Types["String"] = StringDataType = new DataType(this, stringDataTypeAddress);
 
 			// load empty arrays
 			Array<DataTypeField> emptyArrayOfFields;
@@ -126,11 +127,11 @@ namespace VirtualMachine.Core
 			MemoryAddress emptyArrayOfPropertiesAddress = emptyArrayOfFieldsAddress + 4;
 			MemoryAddress emptyArrayOfEventsAddress = emptyArrayOfFieldsAddress + 6;
 			MemoryAddress emptyArrayOfConstructorsAddress = emptyArrayOfFieldsAddress + 8;
-			Objects[emptyArrayOfFieldsAddress] = emptyArrayOfFields = new Array<DataTypeField>(this, emptyArrayOfFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			Objects[emptyArrayOfMethodsAddress] = emptyArrayOfMethods = new Array<DataTypeMethod>(this, emptyArrayOfMethodsAddress, DataTypeMethod.TotalFieldsCountOfDataTypeMethodClass);
-			Objects[emptyArrayOfPropertiesAddress] = emptyArrayOfProperties = new Array<DataTypeProperty>(this, emptyArrayOfPropertiesAddress, DataTypeProperty.TotalFieldsCountOfDataTypePropertyClass);
-			Objects[emptyArrayOfEventsAddress] = emptyArrayOfEvents = new Array<DataTypeEvent>(this, emptyArrayOfEventsAddress, DataTypeEvent.TotalFieldsCountOfDataTypeEventClass);
-			Objects[emptyArrayOfConstructorsAddress] = emptyArrayOfConstructors = new Array<DataTypeConstructor>(this, emptyArrayOfConstructorsAddress, DataTypeConstructor.TotalFieldsCountOfDataTypeConstructorClass);
+			Objects[emptyArrayOfFieldsAddress] = emptyArrayOfFields = new Array<DataTypeField>(this, emptyArrayOfFieldsAddress);
+			Objects[emptyArrayOfMethodsAddress] = emptyArrayOfMethods = new Array<DataTypeMethod>(this, emptyArrayOfMethodsAddress);
+			Objects[emptyArrayOfPropertiesAddress] = emptyArrayOfProperties = new Array<DataTypeProperty>(this, emptyArrayOfPropertiesAddress);
+			Objects[emptyArrayOfEventsAddress] = emptyArrayOfEvents = new Array<DataTypeEvent>(this, emptyArrayOfEventsAddress);
+			Objects[emptyArrayOfConstructorsAddress] = emptyArrayOfConstructors = new Array<DataTypeConstructor>(this, emptyArrayOfConstructorsAddress);
 
 			// load fields arrays
 			Array
@@ -141,9 +142,9 @@ namespace VirtualMachine.Core
 				arrayObjectFieldsAddress = dataTypeDataTypeAddress + 10 * initialObjectsOffset,
 				arrayTypeFieldsAddress = dataTypeDataTypeAddress + 11 * initialObjectsOffset,
 				arrayArrayFieldsAddress = dataTypeDataTypeAddress + 12 * initialObjectsOffset;
-			Objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array<DataTypeField>(this, arrayObjectFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			Objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array<DataTypeField>(this, arrayTypeFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
-			Objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array<DataTypeField>(this, arrayArrayFieldsAddress, DataTypeField.TotalFieldsCountOfDataTypeFieldClass);
+			Objects[arrayObjectFieldsAddress] = objectFieldsArray = new Array<DataTypeField>(this, arrayObjectFieldsAddress);
+			Objects[arrayTypeFieldsAddress] = typeFieldsArray = new Array<DataTypeField>(this, arrayTypeFieldsAddress);
+			Objects[arrayArrayFieldsAddress] = arrayFieldsArray = new Array<DataTypeField>(this, arrayArrayFieldsAddress);
 
 			// load fields
 			DataTypeField
@@ -243,11 +244,6 @@ namespace VirtualMachine.Core
 			dataTypeEventsField.Tag = "DataType Events Field";
 			dataTypeConstructorsField.Tag = "DataType Constructors Field";
 			arrayLengthField.Tag = "Array Length Field";
-
-			// types list
-			Types = Objects.Values.ToList().OfType<DataType>().ToDictionary(
-				type => type.Name.ToString(),
-				type => type);
 		}
 
 		#endregion
@@ -308,6 +304,19 @@ namespace VirtualMachine.Core
 			MemoryAddress lastStartAddress = Objects.Keys.Max();
 			var lastObject  = Objects[lastStartAddress];
 			return lastStartAddress + lastObject.GetDataSize();
+		}
+	}
+
+	public static class MemoryExtensions
+	{
+		public static DataType GetDataType<TypeT>(this Memory memory)
+		{
+			return memory.GetDataType(typeof(TypeT));
+		}
+
+		public static DataType GetDataType(this Memory memory, System.Type type)
+		{
+			return memory.Types[type.Name];
 		}
 	}
 }

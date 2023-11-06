@@ -63,6 +63,7 @@ namespace VirtualMachine.Tests.Core
 			Assert.AreEqual(memory.Size, memory.Cells.Length);
 
 			var dataTypes = memory.Types.Values.ToHashSet();
+
 			Assert.AreEqual(12, dataTypes.Count);
 			Assert.IsTrue(dataTypes.Contains(memory.ObjectDataType));
 			Assert.IsTrue(dataTypes.Contains(memory.DataTypeDataType));
@@ -76,6 +77,11 @@ namespace VirtualMachine.Tests.Core
 			Assert.IsTrue(dataTypes.Contains(memory.ArrayDataType));
 			Assert.IsTrue(dataTypes.Contains(memory.CharDataType));
 			Assert.IsTrue(dataTypes.Contains(memory.StringDataType));
+
+			foreach (var typePair in memory.Types)
+			{
+				Assert.AreEqual(typePair.Key, typePair.Value.Name.ToString());
+			}
 		}
 
 		[Test]

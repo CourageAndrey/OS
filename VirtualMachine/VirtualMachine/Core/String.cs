@@ -9,7 +9,7 @@ namespace VirtualMachine.Core
 		#region Constructors
 
 		public String(Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress, 1) // Char."DataSize"
+			: base(memory, memoryAddress)
 		{ }
 
 		#endregion
