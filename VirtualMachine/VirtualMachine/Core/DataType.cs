@@ -21,7 +21,7 @@ namespace VirtualMachine.Core
 		protected internal const MemoryOffset FieldsCountOfDataTypeClass = 7;
 		protected internal const MemoryOffset TotalFieldsCountOfDataTypeClass = TotalFieldsCountOfObjectClass + FieldsCountOfDataTypeClass;
 
-		public override int GetDataSize()
+		public override int GetReferencedDataSize()
 		{
 			return TotalFieldsCountOfDataTypeClass;
 		}

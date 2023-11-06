@@ -21,7 +21,7 @@ namespace VirtualMachine.Tests.Core
 			// assert
 			Assert.AreSame(memory, @char._memory);
 			Assert.AreSame(memory.CharDataType, @char.GetDataType());
-			Assert.AreEqual(1, @char.GetDataSize());
+			Assert.AreEqual(1, @char.GetReferencedDataSize());
 			Assert.AreEqual(1, @char.GetVariableSize());
 			Assert.AreEqual(0, @char.Value);
 			Assert.AreEqual(freeAddress, @char._memoryAddress);

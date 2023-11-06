@@ -34,7 +34,7 @@ namespace VirtualMachine.Core
 
 		private readonly MemoryOffset _itemDataSize;
 
-		public override MemoryOffset GetDataSize()
+		public override MemoryOffset GetReferencedDataSize()
 		{
 			return TotalFieldsCountOfArrayClass + ((MemoryAddress) Length.Value) * _itemDataSize;
 		}

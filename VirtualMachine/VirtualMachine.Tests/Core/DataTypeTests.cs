@@ -17,7 +17,7 @@ namespace VirtualMachine.Tests.Core
 
 			// assert
 			Assert.AreSame(memory.ObjectDataType, memory.DataTypeDataType.BaseType);
-			Assert.AreEqual(8, memory.DataTypeDataType.GetDataSize());
+			Assert.AreEqual(8, memory.DataTypeDataType.GetReferencedDataSize());
 		}
 
 		[Test]

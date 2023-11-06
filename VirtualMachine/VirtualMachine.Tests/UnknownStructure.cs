@@ -8,7 +8,7 @@ namespace VirtualMachine.Tests
 			: base(memory, memoryAddress, null)
 		{ }
 
-		public override int GetDataSize()
+		public override int GetReferencedDataSize()
 		{
 			return 0;
 		}

@@ -14,7 +14,7 @@ namespace VirtualMachine.Core
 			set { _memory.Cells[_memoryAddress] = value; }
 		}
 
-		public override MemoryOffset GetDataSize()
+		public override MemoryOffset GetReferencedDataSize()
 		{
 			return 1; // one memory word of data
 		}

@@ -21,7 +21,7 @@ namespace VirtualMachine.Tests.Core
 			// assert
 			Assert.AreSame(memory, @object._memory);
 			Assert.AreSame(memory.ObjectDataType, @object.GetDataType());
-			Assert.AreEqual(1, @object.GetDataSize());
+			Assert.AreEqual(1, @object.GetReferencedDataSize());
 			Assert.AreEqual(1, @object.GetVariableSize());
 			Assert.AreEqual(freeAddress, @object._memoryAddress);
 			Assert.Greater(memory.GetNextFreeAddress(), freeAddress);

@@ -15,7 +15,7 @@ namespace VirtualMachine.Core
 
 		public abstract MemoryOffset GetVariableSize();
 
-		public abstract MemoryOffset GetDataSize();
+		public abstract MemoryOffset GetReferencedDataSize();
 
 		internal string Tag;
 
@@ -67,7 +67,7 @@ namespace VirtualMachine.Core
 			return 1; // one memory word-length pointer
 		}
 
-		public override MemoryOffset GetDataSize()
+		public override MemoryOffset GetReferencedDataSize()
 		{
 			return TotalFieldsCountOfObjectClass;
 		}
@@ -100,7 +100,7 @@ namespace VirtualMachine.Core
 
 		public override MemoryOffset GetVariableSize()
 		{
-			return GetDataSize(); // because structures are stored by values
+			return GetReferencedDataSize(); // because structures are stored by values
 		}
 
 		protected Structure(Memory memory, MemoryAddress memoryAddress, DataType dataType)

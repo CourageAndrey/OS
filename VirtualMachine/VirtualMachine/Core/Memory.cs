@@ -303,7 +303,7 @@ namespace VirtualMachine.Core
 		{
 			MemoryAddress lastStartAddress = Objects.Keys.Max();
 			var lastObject  = Objects[lastStartAddress];
-			return lastStartAddress + lastObject.GetDataSize();
+			return lastStartAddress + lastObject.GetReferencedDataSize();
 		}
 	}
 

@@ -13,7 +13,7 @@ namespace VirtualMachine.Reflection
 		protected internal const MemoryOffset FieldsCountOfDataTypePropertyClass = 0;
 		protected internal const MemoryOffset TotalFieldsCountOfDataTypePropertyClass = TotalFieldsCountOfDataTypeMemberClass + FieldsCountOfDataTypePropertyClass;
 
-		public override int GetDataSize()
+		public override int GetReferencedDataSize()
 		{
 			return TotalFieldsCountOfDataTypePropertyClass;
 		}
