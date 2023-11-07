@@ -1,4 +1,6 @@
-﻿using MemoryAddress = System.Int32;
+﻿using VirtualMachine.Core;
+
+using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
 using MemoryWord = System.UInt64;
 
@@ -8,23 +10,13 @@ namespace VirtualMachine.Reflection
 	{
 		#region Properties
 
-		//protected internal const MemoryOffset FieldOffsetXxx = FieldsCountOfMemberClass + 0;
 
-		protected internal const MemoryOffset FieldsCountOfDataTypePropertyClass = 0;
-		protected internal const MemoryOffset TotalFieldsCountOfDataTypePropertyClass = TotalFieldsCountOfDataTypeMemberClass + FieldsCountOfDataTypePropertyClass;
-
-		public override int GetReferencedDataSize()
-		{
-			return TotalFieldsCountOfDataTypePropertyClass;
-		}
 
 		#endregion
 
 		#region Constructors
 
-		public DataTypeProperty(Core.Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress)
-		{ }
+
 
 		#endregion
 	}

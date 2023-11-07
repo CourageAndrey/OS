@@ -10,34 +10,37 @@ namespace VirtualMachine.Tests.Core
 		public void GivenMemory_WhenCreateNewChar_ThenCreateEmptyChar()
 		{
 			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var memory = new Memory();
+			memory.Serialize();
 
-			var freeAddress = memory.GetNextFreeAddress();
+			var freeAddress = memory.NextFreeAddress;
 
 			// act
-			var @char = new Char(memory, freeAddress);
+			var @char = new Char();
+			memory.Allocate(@char);
 
 			// assert
-			Assert.AreSame(memory, @char._memory);
+			Assert.AreSame(memory, @char.Memory);
 			Assert.AreSame(memory.CharDataType, @char.GetDataType());
-			Assert.AreEqual(1, @char.GetReferencedDataSize());
-			Assert.AreEqual(1, @char.GetVariableSize());
 			Assert.AreEqual(0, @char.Value);
-			Assert.AreEqual(freeAddress, @char._memoryAddress);
-			Assert.Greater(memory.GetNextFreeAddress(), freeAddress);
+			Assert.AreEqual(freeAddress, @char.Address);
+			Assert.Greater(memory.NextFreeAddress, freeAddress);
 		}
 
 		[Test]
 		public void GivenChar_WhenCheckToString_ThenReturnValue()
 		{
 			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var memory = new Memory();
+			memory.Serialize();
+
+			var @char = new Char();
+			memory.Allocate(@char);
+
 			const char value = '@';
 
 			// act
-			var @char = new Char(memory, value);
+			@char.Value = value;
 
 			// assert
 			Assert.AreEqual(value.ToString(), @char.ToString());

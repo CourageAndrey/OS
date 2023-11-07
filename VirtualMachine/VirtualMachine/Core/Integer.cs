@@ -4,36 +4,53 @@ using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Integer : Structure
+	public sealed class Integer : ValueObject
 	{
 		#region Properties
 
-		public MemoryWord Value
-		{
-			get { return _memory.Cells[_memoryAddress]; }
-			set { _memory.Cells[_memoryAddress] = value; }
-		}
+		private const int IntegerFieldsCount = 1;
+		private const int FieldOffsetValue = 0;
 
-		public override MemoryOffset GetReferencedDataSize()
+		private ulong _value;
+
+		public ulong Value
 		{
-			return 1; // one memory word of data
+			get
+			{
+				return IsInMemory
+					? Memory.Cells[Address + FieldOffsetValue]
+					: _value;
+			}
+			set
+			{
+				if (IsInMemory)
+				{
+					Memory.Cells[Address + FieldOffsetValue] = value;
+				}
+				else
+				{
+					_value = value;
+				}
+			}
 		}
 
 		#endregion
 
 		#region Constructors
 
-		public Integer(Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress, memory.IntegerDataType)
-		{ }
 
-		public Integer(Memory memory, MemoryWord value = 0)
-			: base(memory)
-		{
-			Value = value;
-		}
 
 		#endregion
+
+		public override DataType GetDataType()
+		{
+			return Memory.IntegerDataType;
+		}
+
+		internal sealed override System.Collections.Generic.List<MemoryWord> Serialize(Memory memory, MemoryAddress address)
+		{
+			return new System.Collections.Generic.List<MemoryWord> { _value };
+		}
 
 		public override string ToString()
 		{

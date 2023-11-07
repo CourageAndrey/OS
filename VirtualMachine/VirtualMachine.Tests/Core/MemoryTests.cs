@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -14,164 +15,126 @@ namespace VirtualMachine.Tests.Core
 	public class MemoryTests
 	{
 		[Test]
-		public void GivenNoCells_WhenTryToCreateMemory_ThenFail()
+		public void GivenNotSerialized_ThenNoDataAndReferences()
 		{
-			// act & assert
-			Assert.Throws<System.ArgumentNullException>(() => new Memory(null, 0));
-		}
+			// arrange & act
+			var memory = new Memory();
 
-		[Test]
-		public void GivenSmallMemory_WhenTryToCreateMemory_ThenFail()
-		{
-			// act & assert
-			Assert.Throws<System.ArgumentException>(() => new Memory(new MemoryWord[Memory.RequiredSize / 10], 0));
-		}
-
-		[Test]
-		public void GivenNonEmptyZeroPointer_WhenTryToCreateMemory_ThenFail()
-		{
-			// arrange
-			var cells = new MemoryWord[Memory.RequiredSize];
-			cells[0] = 1;
-
-			// act & assert
-			Assert.Throws<System.ArgumentException>(() => new Memory(cells, 0));
-		}
-
-		[Test]
-		public void GivenInvalidObjectTypeAddress_WhenTryToCreateMemory_ThenFail()
-		{
-			// arrange
-			var cells = new MemoryWord[Memory.RequiredSize];
-
-			// act & assert
-			Assert.Throws<System.ArgumentException>(() => new Memory(cells, -1));
-			Assert.Throws<System.ArgumentException>(() => new Memory(cells, cells.Length));
-			Assert.Throws<System.ArgumentException>(() => new Memory(cells, cells.Length + 1));
-			Assert.Throws<System.NullReferenceException>(() => new Memory(cells, 0));
-		}
-
-		[Test]
-		public void GivenMemory_WhenCreateWithTypes_ThenAllInitialized()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var dataTypes = new HashSet<DataType>
+			{
+				memory.ObjectDataType,
+				memory.DataTypeDataType,
+				memory.DataTypeMemberDataType,
+				memory.DataTypeFieldDataType,
+				memory.DataTypeMethodDataType,
+				memory.DataTypePropertyDataType,
+				memory.DataTypeEventDataType,
+				memory.DataTypeConstructorDataType,
+				memory.StructureDataType,
+				memory.IntegerDataType,
+				memory.ArrayDataType,
+				memory.CharDataType,
+				memory.StringDataType,
+			};
 
 			// assert
-			Assert.GreaterOrEqual(memory.Size, Memory.RequiredSize);
-			Assert.AreEqual(memory.Size, memory.Cells.Length);
+			Assert.IsNotNull(memory.Cells);
+			Assert.AreEqual(0, memory.Size);
+			Assert.Greater(0, memory.NextFreeAddress);
 
-			var dataTypes = memory.Types.Values.ToHashSet();
+			Assert.AreEqual(0, memory.Objects.Count);
 
-			Assert.AreEqual(12, dataTypes.Count);
-			Assert.IsTrue(dataTypes.Contains(memory.ObjectDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeMemberDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeFieldDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeMethodDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypePropertyDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeEventDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.DataTypeConstructorDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.IntegerDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.ArrayDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.CharDataType));
-			Assert.IsTrue(dataTypes.Contains(memory.StringDataType));
-
-			foreach (var typePair in memory.Types)
+			Assert.AreEqual(memory.Types.Count, dataTypes.Count);
+			foreach (var dataType in dataTypes)
 			{
-				Assert.AreEqual(typePair.Key, typePair.Value.Name.ToString());
+				Assert.IsNotNull(dataType);
+				Assert.AreEqual(dataType.Tag, dataType.Name.ToString());
+				Assert.AreSame(memory.Types[dataType.Tag], dataType);
+				Assert.IsFalse(dataType.IsInMemory);
+
+				Assert.IsNull(dataType.GetDataType());
+				if (dataType != memory.ObjectDataType)
+				{
+					Assert.IsNotNull(dataType.BaseType);
+				}
+				Assert.IsNotNull(dataType.Name);
+				Assert.IsNotNull(dataType.Fields);
+				Assert.IsNotNull(dataType.Methods);
+				Assert.IsNotNull(dataType.Properties);
+				Assert.IsNotNull(dataType.Events);
+				Assert.IsNotNull(dataType.Constructors);
 			}
 		}
 
 		[Test]
-		public void GivenInvalidPointer_WhenGetObject_ThenFail()
+		public void GivenSerialized_ThenAllDataAndReferences()
 		{
 			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var memory = new Memory();
 
-			// act & assert
-			Assert.Throws<System.Exception>(() => memory.GetObject<DataType>(-1));
-			Assert.Throws<System.Exception>(() => memory.GetObject<DataType>(memory.Size));
-			Assert.Throws<System.Exception>(() => memory.GetObject<DataType>(memory.Size + 1));
-		}
-
-		[Test]
-		public void GivenStructures_WhenGetObject_ThenReturnThem()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
-
-			// act & assert
-			var @int = memory.GetObject<Integer>(1);
-			Assert.AreEqual(11, @int.Value);
-			var @char = memory.GetObject<Char>(1);
-			Assert.AreEqual(11, @char.Value);
-			Assert.Throws<System.NotSupportedException>(() => memory.GetObject<UnknownStructure>(1));
-		}
-
-		[Test]
-		public void GivenZeroPointer_WhenGetObject_ThenReturnNull()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
-
-			// act & assert
-			Assert.IsNull(memory.GetObject<DataType>(0));
-		}
-
-		[Test]
-		public void GivenWrongType_WhenGetObject_ThenFail()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
-
-			// act & assert
-			Assert.Throws<System.InvalidCastException>(() => memory.GetObject<DataTypeField>(memory.ObjectDataType._memoryAddress));
-		}
-
-		[Test]
-		public void GivenWrongAddress_WhenGetObject_ThenFail()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
-
-			// act & assert
-			memory.Cells[memory.ObjectDataType._memoryAddress] = 9;
-			Assert.Throws<System.Exception>(() => memory.GetObject<DataType>(memory.ObjectDataType._memoryAddress));
-		}
-
-		[Test]
-		public void GivenExactType_WhenGetObject_ThenReturnObject()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var objects = new List<ReferencedObject>();
+			foreach (var type in memory.Types.Values)
+			{
+				objects.Add(type);
+				objects.Add(type.Name);
+				objects.Add(type.Fields);
+				objects.Add(type.Methods);
+				objects.Add(type.Properties);
+				objects.Add(type.Events);
+				objects.Add(type.Constructors);
+				objects.AddRange(type.Fields);
+				objects.AddRange(type.Methods);
+				objects.AddRange(type.Properties);
+				objects.AddRange(type.Events);
+				objects.AddRange(type.Constructors);
+			}
 
 			// act
-			var dataType = memory.GetObject<DataType>(memory.ObjectDataType._memoryAddress);
+			memory.Serialize();
 
 			// assert
-			Assert.AreSame(memory.DataTypeDataType, dataType);
+			Assert.IsNotNull(memory.Cells);
+			Assert.Less(0, memory.Size);
+			Assert.Less(0, memory.NextFreeAddress);
+			Assert.Greater(memory.NextFreeAddress, memory.Objects.Keys.Max());
+
+			Assert.AreEqual(memory.Objects.Count, objects.Count);
+			foreach (var @object in objects)
+			{
+				Assert.IsNotNull(@object);
+				Assert.IsTrue(@object.IsInMemory);
+				Assert.AreSame(@object, memory.Objects[@object.Address]);
+			}
+
+			foreach (var dataType in memory.Types.Values)
+			{
+				Assert.AreSame(memory.DataTypeDataType, dataType.GetDataType());
+				if (dataType != memory.ObjectDataType)
+				{
+					Assert.IsNotNull(dataType.BaseType);
+				}
+				Assert.IsNotNull(dataType.Name);
+				Assert.IsNotNull(dataType.Fields);
+				Assert.IsNotNull(dataType.Methods);
+				Assert.IsNotNull(dataType.Properties);
+				Assert.IsNotNull(dataType.Events);
+				Assert.IsNotNull(dataType.Constructors);
+				Assert.LessOrEqual(dataType.Tag == "Structure" ? 0 : 1, dataType.GetAllFields().Count, dataType.Tag);
+				Assert.LessOrEqual((MemoryAddress) dataType.Fields.Length, dataType.GetAllFields().Count);
+				Assert.AreEqual(dataType.Tag, dataType.Name.ToString());
+			}
 		}
 
 		[Test]
-		public void GivenAncestorType_WhenGetObject_ThenReturnObject()
+		public void GivenNoObject_WhenTryToAllocate_ThenFail()
 		{
 			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var memory = new Memory();
 
-			// act
-			var dataType = memory.GetObject<Object>(memory.ObjectDataType._memoryAddress);
-
-			// assert
-			Assert.AreSame(memory.DataTypeDataType, dataType);
+			// act & assert
+			Assert.Throws<System.ArgumentNullException>(() => memory.Allocate(null));
+			memory.Serialize();
+			Assert.Throws<System.ArgumentNullException>(() => memory.Allocate(null));
 		}
 	}
 }

@@ -4,44 +4,57 @@ using MemoryWord = System.UInt64;
 
 namespace VirtualMachine.Core
 {
-	public class Char : Structure
+	public sealed class Char : ValueObject
 	{
 		#region Properties
 
-		public MemoryWord Value
-		{
-			get { return _memory.Cells[_memoryAddress]; }
-			set { _memory.Cells[_memoryAddress] = value; }
-		}
+		private const int CharFieldsCount = 1;
+		private const int FieldOffsetValue = 0;
 
-		public override MemoryOffset GetReferencedDataSize()
+		private char _value;
+
+		public char Value
 		{
-			return 1; // one char
+			get
+			{
+				return IsInMemory
+					? (char) Memory.Cells[Address + FieldOffsetValue]
+					: _value;
+			}
+			set
+			{
+				if (IsInMemory)
+				{
+					Memory.Cells[Address + FieldOffsetValue] = value;
+				}
+				else
+				{
+					_value = value;
+				}
+			}
 		}
 
 		#endregion
 
 		#region Constructors
 
-		public Char(Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress, memory.CharDataType)
-		{ }
 
-		public Char(Memory memory, MemoryWord value = 0)
-			: base(memory)
-		{
-			Value = value;
-		}
-
-		public Char(Memory memory, char value = '\0')
-			: this(memory, (MemoryWord) value)
-		{ }
 
 		#endregion
 
+		public override DataType GetDataType()
+		{
+			return Memory.CharDataType;
+		}
+
+		internal sealed override System.Collections.Generic.List<MemoryWord> Serialize(Memory memory, MemoryAddress address)
+		{
+			return new System.Collections.Generic.List<MemoryWord> { _value };
+		}
+
 		public override string ToString()
 		{
-			return ((char) Value).ToString();
+			return Value.ToString();
 		}
 	}
 }

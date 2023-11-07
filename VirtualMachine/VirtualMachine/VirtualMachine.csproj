@@ -68,17 +68,18 @@
     </Compile>
     <Compile Include="Core\Array.cs" />
     <Compile Include="Core\Char.cs" />
-    <Compile Include="Core\Environment.cs" />
     <Compile Include="Core\Integer.cs" />
     <Compile Include="Core\Memory.cs" />
+    <Compile Include="Core\ReferencedObject.cs" />
     <Compile Include="Core\String.cs" />
+    <Compile Include="Core\ValueObject.cs" />
+    <Compile Include="Core\MemoryObject.cs" />
     <Compile Include="Reflection\DataTypeConstructor.cs" />
     <Compile Include="Reflection\DataTypeEvent.cs" />
     <Compile Include="Reflection\DataTypeField.cs" />
     <Compile Include="Reflection\DataTypeMember.cs" />
     <Compile Include="Reflection\DataTypeMethod.cs" />
     <Compile Include="Reflection\DataTypeProperty.cs" />
-    <Compile Include="Core\Object.cs" />
     <Compile Include="Core\DataType.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

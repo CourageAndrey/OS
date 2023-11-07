@@ -1,31 +1,17 @@
-using System.Linq;
-
 using NUnit.Framework;
 
 using VirtualMachine.Core;
+using VirtualMachine.Reflection;
 
 namespace VirtualMachine.Tests.Core
 {
 	public class DataTypeTests
 	{
 		[Test]
-		public void StaticCheck()
-		{
-			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
-
-			// assert
-			Assert.AreSame(memory.ObjectDataType, memory.DataTypeDataType.BaseType);
-			Assert.AreEqual(8, memory.DataTypeDataType.GetReferencedDataSize());
-		}
-
-		[Test]
 		public void GivenAllDataTypes_WhenMemoryLoaded_ThenEverythingIsInitialized()
 		{
 			// arrange
-			var data = Environment.LoadSample();
-			var memory = new Memory(data.Item1, data.Item2);
+			var memory = new Memory();
 
 			var references = new System.Collections.Generic.HashSet<object>();
 
@@ -43,12 +29,48 @@ namespace VirtualMachine.Tests.Core
 		private void CheckForNotNullAndUnique(Array array, System.Collections.Generic.ICollection<object> allItems)
 		{
 			Assert.IsNotNull(array);
-			if (array.Length.Value > 0)
-#warning It's necessary to make members lists unique and then remove this check.
-			{
-				Assert.IsFalse(allItems.Contains(array));
-				allItems.Add(array);
-			}
+			Assert.IsFalse(allItems.Contains(array));
+			allItems.Add(array);
+		}
+
+		[Test]
+		public void GivenNoName_WhenTryToCreateDataType_ThenFail()
+		{
+			// arrange
+			var memory = new Memory();
+
+			// act & assert
+			Assert.Throws<System.ArgumentNullException>(() => new DataType(memory, null, null, new DataTypeField[0]));
+			Assert.Throws<System.ArgumentNullException>(() => new DataType(memory, string.Empty, null, new DataTypeField[0]));
+		}
+
+		[Test]
+		public void GivenNoMemory_WhenTryToCreateDataType_ThenFail()
+		{
+			// act & assert
+			Assert.Throws<System.NullReferenceException>(() => new DataType(null, "test", null, new DataTypeField[0]));
+		}
+
+		[Test]
+		public void GivenDifferentTypes_WhenGetDataSize_ThenReturnNumberOfFields()
+		{
+			// arrange
+			var memory = new Memory();
+
+			// act & assert
+			Assert.AreEqual(1, memory.ObjectDataType.GetDataSize());
+			Assert.AreEqual(8, memory.DataTypeDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypeMemberDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypeFieldDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypeMethodDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypePropertyDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypeEventDataType.GetDataSize());
+			Assert.AreEqual(1, memory.DataTypeConstructorDataType.GetDataSize());
+			Assert.AreEqual(0, memory.StructureDataType.GetDataSize());
+			Assert.AreEqual(1, memory.IntegerDataType.GetDataSize());
+			Assert.AreEqual(2, memory.ArrayDataType.GetDataSize());
+			Assert.AreEqual(1, memory.CharDataType.GetDataSize());
+			Assert.AreEqual(2, memory.StringDataType.GetDataSize());
 		}
 	}
 }

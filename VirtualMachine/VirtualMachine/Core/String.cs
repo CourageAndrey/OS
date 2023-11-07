@@ -1,4 +1,6 @@
-﻿using MemoryAddress = System.Int32;
+﻿using System.Linq;
+
+using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
 using MemoryWord = System.UInt64;
 
@@ -8,8 +10,8 @@ namespace VirtualMachine.Core
 	{
 		#region Constructors
 
-		public String(Memory memory, MemoryAddress memoryAddress)
-			: base(memory, memoryAddress)
+		public String(string value)
+			: base(value.ToCharArray().Select(c => new Char { Value = c }).ToArray())
 		{ }
 
 		#endregion
@@ -17,7 +19,7 @@ namespace VirtualMachine.Core
 		public override string ToString()
 		{
 			var result = string.Empty;
-			for (MemoryAddress c = 0; c < (MemoryAddress) Length.Value; c++)
+			for (MemoryAddress c = 0; c < (MemoryAddress) Length; c++)
 			{
 				result += this[c].ToString();
 			}
