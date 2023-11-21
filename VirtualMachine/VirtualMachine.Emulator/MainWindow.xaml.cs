@@ -1,4 +1,6 @@
-﻿using VirtualMachine.Core;
+﻿using System.Linq;
+
+using VirtualMachine.Core;
 
 using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
@@ -15,24 +17,7 @@ namespace VirtualMachine.Emulator
 			var memory = new Memory();
 			memory.Serialize();
 
-			var text = new System.Text.StringBuilder();
-			var array = memory.ObjectDataType.GetDataType().Fields;
-
-			for (MemoryWord f = 0; f < array.Length; f++)
-			{
-				text.AppendLine(array[(int) f].Tag);
-			}
-
-			var @int = new Integer();
-			@int.Serialize(memory, memory.NextFreeAddress);
-			@int.Value = 123;
-			var @char = new Char();
-			@char.Serialize(memory, memory.NextFreeAddress);
-			@char.Value = 'A';
-			text.AppendLine(@int.ToString());
-			text.AppendLine(@char.ToString());
-
-			Content = text;
+			listBoxTypes.ItemsSource = memory.Types.Select(t => $"[{t.Value.Address:X4}] : {t.Key}");
 		}
 	}
 }
