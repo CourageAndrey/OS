@@ -4,7 +4,7 @@ using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
 using MemoryWord = System.UInt64;
 
-namespace VirtualMachine
+namespace VirtualMachine.Emulator
 {
 	public partial class MainWindow
 	{
