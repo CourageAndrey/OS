@@ -18,6 +18,7 @@ namespace VirtualMachine.Emulator
 			memory.Serialize();
 
 			listBoxTypes.ItemsSource = memory.Types.Select(t => $"[{t.Value.Address:X4}] : {t.Key}");
+			textBoxDump.Text = memory.GetDump();
 		}
 	}
 }

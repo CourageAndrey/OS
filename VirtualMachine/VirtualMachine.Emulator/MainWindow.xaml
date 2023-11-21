@@ -2,7 +2,12 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
-	<GroupBox Header="Loaded data types:">
-		<ListBox Name="listBoxTypes"/>
-	</GroupBox>
+	<TabControl>
+		<TabItem Header="Types">
+			<ListBox Name="listBoxTypes" FontFamily="Courier New" />
+		</TabItem>
+		<TabItem Header="Memory">
+			<TextBox Name="textBoxDump" FontFamily="Courier New" IsReadOnly="True" VerticalScrollBarVisibility="Visible" />
+		</TabItem>
+	</TabControl>
 </Window>

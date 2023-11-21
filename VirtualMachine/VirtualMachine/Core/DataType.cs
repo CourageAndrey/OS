@@ -178,7 +178,41 @@ namespace VirtualMachine.Core
 				data.AddRange(type.Serialize(memory, data.Count));
 			}
 
+			var arrayTypeAddress = (MemoryWord) memory.ArrayDataType.Address;
+			var stringTypeAddress = (MemoryWord) memory.StringDataType.Address;
+			var fieldTypeAddress = (MemoryWord) memory.DataTypeFieldDataType.Address;
+			foreach (var type in memory.Types.Values)
+			{
+				SetArrayTypeAddress(data, type.Address, arrayTypeAddress);
+				SetStringTypeAddress(data, type.Address, stringTypeAddress);
+				SetFieldTypeAddress(data, type.Address, fieldTypeAddress);
+			}
+
 			return data;
+		}
+
+		private static void SetArrayTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord arrayTypeAddress)
+		{
+			data[(MemoryAddress) data[typeAddress + 3]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + 4]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + 5]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + 6]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + 7]] = arrayTypeAddress;
+		}
+
+		private static void SetStringTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord stringTypeAddress)
+		{
+			data[(MemoryAddress) data[typeAddress + 2]] = stringTypeAddress;
+		}
+
+		private static void SetFieldTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord fieldTypeAddress)
+		{
+			var arrayAddress = (MemoryAddress) data[typeAddress + 3];
+			var arrayLength = data[arrayAddress + 1];
+			for (MemoryWord i = 0; i < arrayLength; i++)
+			{
+				data[(MemoryAddress) data[arrayAddress + 2 + (MemoryAddress) i]] = fieldTypeAddress;
+			}
 		}
 
 		protected override System.Collections.Generic.List<MemoryWord> SerializeReferencedData(Memory memory, MemoryAddress address)
@@ -208,6 +242,11 @@ namespace VirtualMachine.Core
 			data.AddRange(constructorsData);
 
 			return data;
+		}
+
+		public override string ToString()
+		{
+			return Name.ToString();
 		}
 	}
 

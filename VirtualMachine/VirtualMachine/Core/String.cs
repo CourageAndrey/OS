@@ -25,5 +25,12 @@ namespace VirtualMachine.Core
 			}
 			return result;
 		}
+
+		protected override System.Collections.Generic.List<MemoryWord> SerializeReferencedData(Memory memory, MemoryAddress address)
+		{
+			var data = base.SerializeReferencedData(memory, address);
+
+			return data;
+		}
 	}
 }

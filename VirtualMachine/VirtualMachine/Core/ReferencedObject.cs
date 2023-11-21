@@ -82,12 +82,16 @@ namespace VirtualMachine.Core
 				// NOT NECESSARY: memory.IntegerDataType },
 				// NOT NECESSARY: memory.CharDataType },
 
-				foreach (var typePair in types)
+				var instanceType = instance.GetType();
+				if (!types.TryGetValue(instanceType, out type))
 				{
-					if (typePair.Key.IsAssignableFrom(instance.GetType()))
+					foreach (var typePair in types)
 					{
-						type = typePair.Value;
-						break;
+						if (typePair.Key.IsAssignableFrom(instance.GetType()))
+						{
+							type = typePair.Value;
+							break;
+						}
 					}
 				}
 			}

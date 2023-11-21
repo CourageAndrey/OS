@@ -136,5 +136,19 @@ namespace VirtualMachine.Tests.Core
 			memory.Serialize();
 			Assert.Throws<System.ArgumentNullException>(() => memory.Allocate(null));
 		}
+
+		[Test]
+		public void GivenObjects_WhenToString_ThenAllWorks()
+		{
+			// arrange
+			var memory = new Memory();
+			memory.Serialize();
+
+			// act & assert
+			foreach (var @object in memory.Objects.Values)
+			{
+				Assert.DoesNotThrow(() => @object.ToString());
+			}
+		}
 	}
 }

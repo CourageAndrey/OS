@@ -1,4 +1,6 @@
-﻿using VirtualMachine.Reflection;
+﻿using System.Linq;
+
+using VirtualMachine.Reflection;
 
 using MemoryAddress = System.Int32;
 using MemoryOffset = System.Int32;
@@ -131,6 +133,44 @@ namespace VirtualMachine.Core
 			NextFreeAddress = data.Count;
 			data.AddRange(new MemoryWord[FreeMemoryCount]);
 			Cells = data.ToArray();
+		}
+
+		internal string GetDump()
+		{
+			var text = new System.Text.StringBuilder();
+			for (int address = 0; address < Cells.Length; address++)
+			{
+				string line = $"{address:X4} : {Cells[address]:X4}";
+
+				MemoryObject @object;
+				if (Objects.TryGetValue(address, out @object))
+				{
+					string toString, type;
+
+					try
+					{
+						toString = @object.ToString();
+					}
+					catch (System.Exception e)
+					{
+						toString = e.ToString();
+					}
+
+					try
+					{
+						type = Types.First(kvp => kvp.Value == @object.GetDataType()).Key;
+					}
+					catch
+					{
+						type = "UNKNOWN";
+					}
+
+					line += $" ({type}) : {toString} ";
+				}
+
+				text.AppendLine(line);
+			}
+			return text.ToString();
 		}
 	}
 }
