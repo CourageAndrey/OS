@@ -18,6 +18,9 @@ namespace VirtualMachine.Core
 		public MemoryAddress Size
 		{ get { return Cells.Length; } }
 
+		internal bool IsOnline
+		{ get { return NextFreeAddress > 0; } }
+
 		public System.Collections.Generic.IDictionary<MemoryAddress, MemoryObject> Objects { get; }
 		public System.Collections.Generic.IDictionary<string, DataType> Types { get; }
 		public MemoryAddress NextFreeAddress { get; internal set; }
@@ -102,6 +105,24 @@ namespace VirtualMachine.Core
 			NextFreeAddress += (MemoryAddress) variable.VariableSize;
 
 			return variable.Address;
+		}
+
+		public MemoryAddress Store(MemoryObject variable)
+		{
+			if (!IsOnline)
+			{
+				throw new System.InvalidOperationException("Impossible to store objects in detached memory.");
+			}
+
+			var data = variable.Serialize(this, NextFreeAddress);
+			var address = Allocate(variable);
+
+			for (int a = 0; a < data.Count; a++)
+			{
+				Cells[variable.Address + a] = data[a];
+			}
+
+			return address;
 		}
 
 		public void Serialize()

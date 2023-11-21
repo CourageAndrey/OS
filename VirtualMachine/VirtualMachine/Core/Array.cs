@@ -72,8 +72,7 @@ namespace VirtualMachine.Core
 			{
 				if (IsInMemory)
 				{
-#warning Implement array member setter!
-					throw new System.NotImplementedException();
+					SetFieldValue<ItemT>(ArrayFieldsTotalCount + index * (MemoryAddress) ItemSize, value);
 				}
 				else
 				{

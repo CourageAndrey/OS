@@ -51,7 +51,7 @@ namespace VirtualMachine.Tests.Core
 		}
 
 		[Test]
-		public void GivenOnline_WhenTryToSetItem_ThenFail()
+		public void GivenOnline_WhenSetItem_ThenSucceed()
 		{
 			// arrange
 			var array = new Array<Integer>(new[]
@@ -62,11 +62,22 @@ namespace VirtualMachine.Tests.Core
 			});
 
 			var memory = new Memory();
-			array.Memory = memory;
-			array.Address = 3;
+			memory.Serialize();
 
-			// act & assert
-			Assert.Throws<System.NotImplementedException>(() => { array[1] = new Integer(); });
+			memory.Store(array);
+
+			// pre-assert
+			Assert.AreSame(memory.ArrayDataType, array.GetDataType());
+			Assert.AreEqual(3, array.Length);
+			Assert.AreEqual(123, array[0].Value);
+			Assert.AreEqual(456, array[1].Value);
+			Assert.AreEqual(789, array[2].Value);
+
+			// act
+			array[1] = new Integer { Value = 654 };
+
+			// assert
+			Assert.AreEqual(654, array[1].Value);
 		}
 
 		[Test]

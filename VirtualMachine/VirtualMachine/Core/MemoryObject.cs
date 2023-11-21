@@ -76,6 +76,50 @@ namespace VirtualMachine.Core
 			}
 		}
 
+		protected internal void SetFieldValue<ObjectT>(MemoryAddress fieldOffset, ObjectT value)
+			where ObjectT : MemoryObject
+		{
+			if (Memory == null)
+			{
+				throw new System.InvalidOperationException("Object is not in memory.");
+			}
+			if (Address <= 0)
+			{
+				throw new System.InvalidOperationException("Object has invalid address.");
+			}
+			if (fieldOffset < 0)
+			{
+				throw new System.ArgumentException("Field offset has to be positive.");
+			}
+
+			if (typeof(ReferencedObject).IsAssignableFrom(typeof(ObjectT)))
+			{
+				var refObject = value as ReferencedObject;
+				if (refObject.IsInMemory)
+				{
+					Memory.Cells[Address + fieldOffset] = (MemoryWord) refObject.Address;
+				}
+				else
+				{
+					throw new System.InvalidOperationException("Value objct is not in memory.");
+				}
+			}
+
+			else if (typeof(ObjectT) == typeof(Integer))
+			{
+				Memory.Cells[Address + fieldOffset] = (value as Integer).Value;
+			}
+			else if (typeof(ObjectT) == typeof(Char))
+			{
+				Memory.Cells[Address + fieldOffset] = (value as Char).Value;
+			}
+
+			else
+			{
+				throw new System.NotSupportedException("Unknown object type.");
+			}
+		}
+
 		internal abstract System.Collections.Generic.List<MemoryWord> Serialize(Memory memory, MemoryAddress address);
 
 		public override string ToString()
