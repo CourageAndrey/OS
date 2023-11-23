@@ -10,8 +10,9 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		protected const int ObjectFieldsCount = 1;
-		protected const int FieldOffsetType = 0;
+		protected internal const MemoryOffset ObjectFieldsCount = 1;
+		protected internal const MemoryOffset ObjectFieldsTotalCount = ObjectFieldsCount;
+		protected internal const MemoryOffset FieldOffsetType = 0;
 
 		public override MemoryWord ReferencedDataSize
 		{ get { return GetDataType().GetDataSize(); } }

@@ -8,8 +8,8 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		private const int IntegerFieldsCount = 1;
-		private const int FieldOffsetValue = 0;
+		internal const MemoryOffset IntegerFieldsCount = 1;
+		internal const MemoryOffset FieldOffsetValue = 0;
 
 		private ulong _value;
 

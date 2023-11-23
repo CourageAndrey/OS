@@ -13,15 +13,15 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		protected const MemoryOffset DataTypeFieldsCount = 7;
-		protected const MemoryOffset DataTypeFieldsTotalCount = ObjectFieldsCount + DataTypeFieldsCount;
-		protected const MemoryOffset FieldOffsetBaseType = ObjectFieldsCount + 0;
-		protected const MemoryOffset FieldOffsetName = ObjectFieldsCount + 1;
-		protected const MemoryOffset FieldOffsetFields = ObjectFieldsCount + 2;
-		protected const MemoryOffset FieldOffsetMethods = ObjectFieldsCount + 3;
-		protected const MemoryOffset FieldOffsetProperties = ObjectFieldsCount + 4;
-		protected const MemoryOffset FieldOffsetEvents = ObjectFieldsCount + 5;
-		protected const MemoryOffset FieldOffsetConstructors = ObjectFieldsCount + 6;
+		protected internal const MemoryOffset DataTypeFieldsCount = 7;
+		protected internal const MemoryOffset DataTypeFieldsTotalCount = ObjectFieldsTotalCount + DataTypeFieldsCount;
+		protected internal const MemoryOffset FieldOffsetBaseType = ObjectFieldsTotalCount + 0;
+		protected internal const MemoryOffset FieldOffsetName = ObjectFieldsTotalCount + 1;
+		protected internal const MemoryOffset FieldOffsetFields = ObjectFieldsTotalCount + 2;
+		protected internal const MemoryOffset FieldOffsetMethods = ObjectFieldsTotalCount + 3;
+		protected internal const MemoryOffset FieldOffsetProperties = ObjectFieldsTotalCount + 4;
+		protected internal const MemoryOffset FieldOffsetEvents = ObjectFieldsTotalCount + 5;
+		protected internal const MemoryOffset FieldOffsetConstructors = ObjectFieldsTotalCount + 6;
 
 		private readonly DataType _baseType;
 		private readonly String _name;

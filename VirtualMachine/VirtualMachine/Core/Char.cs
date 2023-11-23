@@ -8,8 +8,8 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		private const int CharFieldsCount = 1;
-		private const int FieldOffsetValue = 0;
+		internal const MemoryOffset CharFieldsCount = 1;
+		internal const MemoryOffset FieldOffsetValue = 0;
 
 		private char _value;
 

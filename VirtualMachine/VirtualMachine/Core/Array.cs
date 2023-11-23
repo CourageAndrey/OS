@@ -8,9 +8,9 @@ namespace VirtualMachine.Core
 	{
 		#region Properties
 
-		protected const MemoryOffset ArrayFieldsCount = 1;
-		protected const MemoryOffset ArrayFieldsTotalCount = ObjectFieldsCount + ArrayFieldsCount;
-		protected const MemoryOffset FieldOffsetLength = ObjectFieldsCount + 0;
+		protected internal const MemoryOffset ArrayFieldsCount = 1;
+		protected internal const MemoryOffset ArrayFieldsTotalCount = ObjectFieldsTotalCount + ArrayFieldsCount;
+		protected internal const MemoryOffset FieldOffsetLength = ObjectFieldsTotalCount + 0;
 
 		private readonly System.Array _items;
 
