@@ -114,7 +114,7 @@ namespace VirtualMachine.Core
 			{
 				data.AddRange(new MemoryWord[Length]);
 
-				var itemAddress = address + ArrayFieldsTotalCount;
+				var itemAddress = address + ArrayFieldsTotalCount + (MemoryAddress) Length;
 				for (var i = 0; i < _items.Length; i++)
 				{
 					var item = _items[i];
