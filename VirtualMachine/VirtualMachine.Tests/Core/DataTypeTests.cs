@@ -60,12 +60,12 @@ namespace VirtualMachine.Tests.Core
 			// act & assert
 			Assert.AreEqual(1, memory.ObjectDataType.GetDataSize());
 			Assert.AreEqual(8, memory.DataTypeDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypeMemberDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypeFieldDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypeMethodDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypePropertyDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypeEventDataType.GetDataSize());
-			Assert.AreEqual(1, memory.DataTypeConstructorDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypeMemberDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypeFieldDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypeMethodDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypePropertyDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypeEventDataType.GetDataSize());
+			Assert.AreEqual(2, memory.DataTypeConstructorDataType.GetDataSize());
 			Assert.AreEqual(0, memory.StructureDataType.GetDataSize());
 			Assert.AreEqual(1, memory.IntegerDataType.GetDataSize());
 			Assert.AreEqual(2, memory.ArrayDataType.GetDataSize());

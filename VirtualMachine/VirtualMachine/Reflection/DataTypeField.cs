@@ -17,9 +17,8 @@ namespace VirtualMachine.Reflection
 		#region Constructors
 
 		internal DataTypeField(string name)
-		{
-			Tag = name;
-		}
+			: base(name)
+		{ }
 
 		#endregion
 	}

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
 using VirtualMachine.Reflection;
 
@@ -112,7 +111,7 @@ namespace VirtualMachine.Core
 		{
 			if (string.IsNullOrEmpty(name))
 			{
-				throw new ArgumentNullException(nameof(name));
+				throw new System.ArgumentNullException(nameof(name));
 			}
 
 			_baseType = baseType;
@@ -185,7 +184,7 @@ namespace VirtualMachine.Core
 			{
 				SetArrayTypeAddress(data, type.Address, arrayTypeAddress);
 				SetStringTypeAddress(data, type.Address, stringTypeAddress);
-				SetFieldTypeAddress(data, type.Address, fieldTypeAddress);
+				SetFieldTypeAddressAndItsNameAddress(data, type.Address, fieldTypeAddress, stringTypeAddress);
 			}
 
 			return data;
@@ -193,25 +192,27 @@ namespace VirtualMachine.Core
 
 		private static void SetArrayTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord arrayTypeAddress)
 		{
-			data[(MemoryAddress) data[typeAddress + 3]] = arrayTypeAddress;
-			data[(MemoryAddress) data[typeAddress + 4]] = arrayTypeAddress;
-			data[(MemoryAddress) data[typeAddress + 5]] = arrayTypeAddress;
-			data[(MemoryAddress) data[typeAddress + 6]] = arrayTypeAddress;
-			data[(MemoryAddress) data[typeAddress + 7]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetFields]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetMethods]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetProperties]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetEvents]] = arrayTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetConstructors]] = arrayTypeAddress;
 		}
 
 		private static void SetStringTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord stringTypeAddress)
 		{
-			data[(MemoryAddress) data[typeAddress + 2]] = stringTypeAddress;
+			data[(MemoryAddress) data[typeAddress + FieldOffsetName]] = stringTypeAddress;
 		}
 
-		private static void SetFieldTypeAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord fieldTypeAddress)
+		private static void SetFieldTypeAddressAndItsNameAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord fieldTypeAddress, MemoryWord stringTypeAddress)
 		{
-			var arrayAddress = (MemoryAddress) data[typeAddress + 3];
-			var arrayLength = data[arrayAddress + 1];
+			var arrayAddress = (MemoryAddress) data[typeAddress + FieldOffsetFields];
+			var arrayLength = data[arrayAddress + Array.FieldOffsetLength];
 			for (MemoryWord i = 0; i < arrayLength; i++)
 			{
-				data[(MemoryAddress) data[arrayAddress + 2 + (MemoryAddress) i]] = fieldTypeAddress;
+				var fieldAddress = (MemoryAddress) data[arrayAddress + Array.ArrayFieldsTotalCount + (MemoryAddress) i];
+				data[fieldAddress] = fieldTypeAddress;
+				data[(MemoryAddress) data[fieldAddress + DataTypeMember.FieldOffsetName]] = stringTypeAddress;
 			}
 		}
 
@@ -247,6 +248,30 @@ namespace VirtualMachine.Core
 		public override string ToString()
 		{
 			return Name.ToString();
+		}
+
+		public System.Collections.Generic.IEnumerable<DataTypeMember> GetAllMembers()
+		{
+			foreach (var field in Fields)
+			{
+				yield return field;
+			}
+			foreach (var method in Methods)
+			{
+				yield return method;
+			}
+			foreach (var property in Properties)
+			{
+				yield return property;
+			}
+			foreach (var @event in Events)
+			{
+				yield return @event;
+			}
+			foreach (var constructor in Constructors)
+			{
+				yield return constructor;
+			}
 		}
 	}
 

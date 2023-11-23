@@ -16,7 +16,9 @@ namespace VirtualMachine.Reflection
 
 		#region Constructors
 
-
+		internal DataTypeMethod(string name)
+			: base(name)
+		{ }
 
 		#endregion
 	}

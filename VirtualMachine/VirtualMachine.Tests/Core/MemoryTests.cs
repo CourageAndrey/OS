@@ -83,6 +83,7 @@ namespace VirtualMachine.Tests.Core
 				objects.Add(type.Events);
 				objects.Add(type.Constructors);
 				objects.AddRange(type.Fields);
+				objects.AddRange(type.Fields.Select(field => field.Name));
 				objects.AddRange(type.Methods);
 				objects.AddRange(type.Properties);
 				objects.AddRange(type.Events);
@@ -119,6 +120,10 @@ namespace VirtualMachine.Tests.Core
 				Assert.IsNotNull(dataType.Properties);
 				Assert.IsNotNull(dataType.Events);
 				Assert.IsNotNull(dataType.Constructors);
+				foreach (var member in dataType.GetAllMembers())
+				{
+					Assert.IsNotNull(member.Name);
+				}
 				Assert.LessOrEqual(dataType.Tag == "Structure" ? 0 : 1, dataType.GetAllFields().Count, dataType.Tag);
 				Assert.LessOrEqual((MemoryAddress) dataType.Fields.Length, dataType.GetAllFields().Count);
 				Assert.AreEqual(dataType.Tag, dataType.Name.ToString());

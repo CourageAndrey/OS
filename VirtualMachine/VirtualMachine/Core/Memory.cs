@@ -63,7 +63,7 @@ namespace VirtualMachine.Core
 			Types["Object"] = ObjectDataType = new DataType();
 			DataTypeDataType = new DataType(this);
 
-			DataTypeMemberDataType = new DataType(this, "DataTypeMember", ObjectDataType);
+			DataTypeMemberDataType = new DataType(this, "DataTypeMember", ObjectDataType, new[] { new DataTypeField("Name") });
 			DataTypeFieldDataType = new DataType(this, "DataTypeField", DataTypeMemberDataType);
 			DataTypeMethodDataType = new DataType(this, "DataTypeMethod", DataTypeMemberDataType);
 			DataTypePropertyDataType = new DataType(this, "DataTypeProperty", DataTypeMemberDataType);
