@@ -107,7 +107,8 @@ namespace VirtualMachine.Core
 		private DataType(
 			string name,
 			DataType baseType,
-			DataTypeField[] fields = null)
+			DataTypeField[] fields = null,
+			DataTypeMethod[] methods = null)
 		{
 			if (string.IsNullOrEmpty(name))
 			{
@@ -117,14 +118,14 @@ namespace VirtualMachine.Core
 			_baseType = baseType;
 			_name = new String(Tag = name);
 			_fields = new Array<DataTypeField>(fields ?? new DataTypeField[0]);
-			_methods = new Array<DataTypeMethod>(new DataTypeMethod[0]);
+			_methods = new Array<DataTypeMethod>(methods ?? new DataTypeMethod[0]);
 			_properties = new Array<DataTypeProperty>(new DataTypeProperty[0]);
 			_events = new Array<DataTypeEvent>(new DataTypeEvent[0]);
 			_constructors = new Array<DataTypeConstructor>(new DataTypeConstructor[0]);
 		}
 
 		internal DataType()
-			: this("Object", null, new[] { new DataTypeField("#type") })
+			: this("Object", null, new[] { new DataTypeField("#type") }, new[] { new DataTypeMethod("ToString") })
 		{ }
 
 		internal DataType(Memory memory)
@@ -137,12 +138,12 @@ namespace VirtualMachine.Core
 				new DataTypeField("Properties"),
 				new DataTypeField("Events"),
 				new DataTypeField("Constructors"),
-			})
+			}, new[] { new DataTypeMethod("GetAllFields"), new DataTypeMethod("GetAllMembers") })
 		{
 			memory.Types[Tag] = this;
 		}
 
-		internal DataType(Memory memory, string name, DataType baseType, DataTypeField[] fields = null)
+		internal DataType(Memory memory, string name, DataType baseType, DataTypeField[] fields = null, DataTypeMethod[] methods = null)
 			: this(name, baseType, fields)
 		{
 			memory.Types[name] = this;
@@ -180,11 +181,13 @@ namespace VirtualMachine.Core
 			var arrayTypeAddress = (MemoryWord) memory.ArrayDataType.Address;
 			var stringTypeAddress = (MemoryWord) memory.StringDataType.Address;
 			var fieldTypeAddress = (MemoryWord) memory.DataTypeFieldDataType.Address;
+			var methodTypeAddress = (MemoryWord) memory.DataTypeMethodDataType.Address;
 			foreach (var type in memory.Types.Values)
 			{
 				SetArrayTypeAddress(data, type.Address, arrayTypeAddress);
 				SetStringTypeAddress(data, type.Address, stringTypeAddress);
 				SetFieldTypeAddressAndItsNameAddress(data, type.Address, fieldTypeAddress, stringTypeAddress);
+				SetMethodTypeAddressAndItsNameAddress(data, type.Address, methodTypeAddress, stringTypeAddress);
 			}
 
 			return data;
@@ -213,6 +216,18 @@ namespace VirtualMachine.Core
 				var fieldAddress = (MemoryAddress) data[arrayAddress + Array.ArrayFieldsTotalCount + (MemoryAddress) i];
 				data[fieldAddress] = fieldTypeAddress;
 				data[(MemoryAddress) data[fieldAddress + DataTypeMember.FieldOffsetName]] = stringTypeAddress;
+			}
+		}
+
+		private static void SetMethodTypeAddressAndItsNameAddress(System.Collections.Generic.IList<MemoryWord> data, MemoryAddress typeAddress, MemoryWord methodTypeAddress, MemoryWord stringTypeAddress)
+		{
+			var arrayAddress = (MemoryAddress) data[typeAddress + FieldOffsetMethods];
+			var arrayLength = data[arrayAddress + Array.FieldOffsetLength];
+			for (MemoryWord i = 0; i < arrayLength; i++)
+			{
+				var methodAddress = (MemoryAddress) data[arrayAddress + Array.ArrayFieldsTotalCount + (MemoryAddress) i];
+				data[methodAddress] = methodTypeAddress;
+				data[(MemoryAddress) data[methodAddress + DataTypeMember.FieldOffsetName]] = stringTypeAddress;
 			}
 		}
 

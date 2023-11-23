@@ -85,6 +85,7 @@ namespace VirtualMachine.Tests.Core
 				objects.AddRange(type.Fields);
 				objects.AddRange(type.Fields.Select(field => field.Name));
 				objects.AddRange(type.Methods);
+				objects.AddRange(type.Methods.Select(method => method.Name));
 				objects.AddRange(type.Properties);
 				objects.AddRange(type.Events);
 				objects.AddRange(type.Constructors);
