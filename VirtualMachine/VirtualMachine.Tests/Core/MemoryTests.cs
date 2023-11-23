@@ -31,6 +31,7 @@ namespace VirtualMachine.Tests.Core
 				memory.DataTypeEventDataType,
 				memory.DataTypeConstructorDataType,
 				memory.StructureDataType,
+				memory.BoolDataType,
 				memory.IntegerDataType,
 				memory.ArrayDataType,
 				memory.CharDataType,

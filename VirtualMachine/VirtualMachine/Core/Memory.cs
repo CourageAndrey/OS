@@ -42,6 +42,7 @@ namespace VirtualMachine.Core
 		
 			StructureDataType,
 
+			BoolDataType,
 			IntegerDataType,
 			ArrayDataType,
 			CharDataType,
@@ -71,6 +72,7 @@ namespace VirtualMachine.Core
 			DataTypeConstructorDataType = new DataType(this, "DataTypeConstructor", DataTypeMemberDataType);
 
 			StructureDataType = new DataType(this, "Structure", ObjectDataType);
+			BoolDataType = new DataType(this, "Bool", StructureDataType, new[] { new DataTypeField("#value") });
 			IntegerDataType = new DataType(this, "Integer", StructureDataType, new[] { new DataTypeField("#value") });
 			ArrayDataType = new DataType(this, "Array", ObjectDataType, new[] { new DataTypeField("Length") });
 			CharDataType = new DataType(this, "Char", StructureDataType, new[] { new DataTypeField("#value") });
@@ -85,6 +87,7 @@ namespace VirtualMachine.Core
 				{ typeof(DataTypeProperty), DataTypePropertyDataType },
 				{ typeof(DataTypeEvent), DataTypeEventDataType },
 				{ typeof(DataTypeConstructor), DataTypeConstructorDataType },
+				{ typeof(Bool), BoolDataType },
 				{ typeof(Integer), IntegerDataType },
 				{ typeof(Char), CharDataType },
 				{ typeof(String), StringDataType },
