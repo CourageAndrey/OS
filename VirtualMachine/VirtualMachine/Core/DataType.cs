@@ -125,7 +125,7 @@ namespace VirtualMachine.Core
 		}
 
 		internal DataType()
-			: this("Object", null, new[] { new DataTypeField("#type") }, new[] { new DataTypeMethod("ToString") })
+			: this("Object", null, new[] { new DataTypeField("#type") }, new[] { new DataTypeMethod("ToString", new MemoryWord[1]) })
 		{ }
 
 		internal DataType(Memory memory)
@@ -138,7 +138,7 @@ namespace VirtualMachine.Core
 				new DataTypeField("Properties"),
 				new DataTypeField("Events"),
 				new DataTypeField("Constructors"),
-			}, new[] { new DataTypeMethod("GetAllFields"), new DataTypeMethod("GetAllMembers") })
+			}, new[] { new DataTypeMethod("GetAllFields", new MemoryWord[1]), new DataTypeMethod("GetAllMembers", new MemoryWord[1]) })
 		{
 			memory.Types[Tag] = this;
 		}
