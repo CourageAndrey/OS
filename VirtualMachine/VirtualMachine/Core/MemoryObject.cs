@@ -29,21 +29,28 @@ namespace VirtualMachine.Core
 
 		#endregion
 
-		protected internal ObjectT GetFieldValue<ObjectT>(MemoryAddress fieldOffset)
-			where ObjectT : MemoryObject
+		protected internal void ValidateMemory(MemoryAddress offset)
 		{
 			if (Memory == null)
 			{
 				throw new System.InvalidOperationException("Object is not in memory.");
 			}
+
 			if (Address <= 0)
 			{
 				throw new System.InvalidOperationException("Object has invalid address.");
 			}
-			if (fieldOffset < 0)
+
+			if (offset < 0)
 			{
 				throw new System.ArgumentException("Field offset has to be positive.");
 			}
+		}
+
+		protected internal ObjectT GetFieldValue<ObjectT>(MemoryAddress fieldOffset)
+			where ObjectT : MemoryObject
+		{
+			ValidateMemory(fieldOffset);
 
 			if (typeof(ReferencedObject).IsAssignableFrom(typeof(ObjectT)))
 			{
@@ -79,18 +86,7 @@ namespace VirtualMachine.Core
 		protected internal void SetFieldValue<ObjectT>(MemoryAddress fieldOffset, ObjectT value)
 			where ObjectT : MemoryObject
 		{
-			if (Memory == null)
-			{
-				throw new System.InvalidOperationException("Object is not in memory.");
-			}
-			if (Address <= 0)
-			{
-				throw new System.InvalidOperationException("Object has invalid address.");
-			}
-			if (fieldOffset < 0)
-			{
-				throw new System.ArgumentException("Field offset has to be positive.");
-			}
+			ValidateMemory(fieldOffset);
 
 			if (typeof(ReferencedObject).IsAssignableFrom(typeof(ObjectT)))
 			{
