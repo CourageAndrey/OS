@@ -1,0 +1,106 @@
+# Cursor Rules for OS Project
+
+## Project Structure
+
+This repository contains:
+- **Core/**: Assembly language bootloader and OS kernel code (FASM syntax)
+- **VirtualMachine/**: C# virtual machine implementation with emulator UI and tests
+
+## Assembly Code (Core/)
+
+### General Guidelines
+- Use FASM assembler syntax
+- All assembly files are bootloader/kernel code running in real/protected/long mode
+- Follow existing conventions for constants, structures, and macros
+- Use `equ` for constants, `struc` for structures, `macro` for macros
+- Include comments explaining complex operations
+
+### File Organization
+- `BIOS.asm`: BIOS interrupt constants and macros - must be included first when needed
+- `Loader.asm`: Boot loader entry point (starts at 0x7C00)
+- `ProtectedMode.asm`: Protected mode initialization
+- `LongMode.asm`: Long mode (64-bit) initialization
+- `Subroutines.ASM`: Reusable subroutines
+- `UserCode.asm`: User-level code
+
+### Constants and Memory
+- Use symbolic constants from BIOS.asm for interrupts (e.g., `InterruptVideo`, `InterruptDiskIo`)
+- Memory addresses: Real mode at 0xB800, Protected mode at 0xB8000
+- Boot sector starts at 0x7C00
+- Disk sectors are 512 bytes (`SectorLength equ 0x200`)
+
+### Code Style
+- Use descriptive labels and constant names (e.g., `loaderVarDiskId` not `diskId`)
+- Prefix loader variables with `loaderVar`, loader constants with `loaderConst`, loader messages with `loaderMessage`
+- Document complex memory layouts and addressing modes
+- Preserve register state in subroutines unless documented otherwise
+
+## C# Virtual Machine Code
+
+### Project Structure
+- **VirtualMachine/**: Core library (netstandard2.0) - memory management, data types, reflection
+- **VirtualMachine.Emulator/**: WPF application for visualizing and testing the VM
+- **VirtualMachine.Tests/**: NUnit test suite (net481)
+
+### Memory Management
+- Uses custom memory management with `Memory`, `MemoryObject`, `ValueObject`, `ReferencedObject`
+- Memory addresses use `MemoryAddress` (Int32) type alias
+- Memory offsets use `MemoryOffset` (Int32) type alias
+- Memory words use `MemoryWord` (UInt64) type alias
+- Objects can exist in-memory or out-of-memory (check `IsInMemory` property)
+- When `IsInMemory`, use `GetFieldValue<T>()` to access fields
+
+### Data Types
+- All types inherit from base classes: `MemoryObject`, `ValueObject`, or `ReferencedObject`
+- Built-in types: `Integer`, `Bool`, `Char`, `String`, `Array<T>`, `DataType`
+- `DataType` provides runtime type information with fields, methods, properties, events, constructors
+- Use `DataType` for reflection operations
+
+### Code Conventions
+- Use type aliases: `MemoryAddress`, `MemoryOffset`, `MemoryWord` instead of raw types
+- Validate null/empty strings with `ArgumentNullException`
+- Use properties that check `IsInMemory` and delegate to memory when needed
+- Serialization methods return `List<MemoryWord>` and accept memory address parameters
+- Field offsets are defined as constants (e.g., `FieldOffsetBaseType`, `FieldOffsetName`)
+
+### Reflection System
+- `DataTypeField`, `DataTypeMethod`, `DataTypeProperty`, `DataTypeEvent`, `DataTypeConstructor` represent type members
+- All inherit from `DataTypeMember` which has a `Name` field
+- Use `GetAllFields()` and `GetAllMembers()` methods for type hierarchies
+
+### Testing
+- Use NUnit framework
+- Test files should be in `VirtualMachine.Tests/Core/` matching the structure
+- Test file naming: `{ClassName}Tests.cs`
+- Test methods should be descriptive and cover edge cases
+
+### WPF Emulator
+- MainWindow displays memory dump and type information
+- Use `Memory.Serialize()` to prepare memory for display
+- Use `Memory.GetDump()` for text representation
+
+## General Code Guidelines
+
+### When Writing Assembly
+- Always include `BIOS.asm` first if you need BIOS constants
+- Document memory layout when defining structures
+- Use macros for repetitive segment descriptor definitions
+- Preserve register state in subroutines (document if intentionally not preserved)
+- Handle errors gracefully (e.g., disk read retries)
+
+### When Writing C# Code
+- Follow existing patterns for memory-backed objects
+- Use the established type aliases consistently
+- Maintain compatibility with netstandard2.0 for the core library
+- Write comprehensive tests for new features
+- Document complex memory serialization logic
+
+### Error Handling
+- Assembly: Provide user feedback on errors (e.g., "Error: disk reading has failed!")
+- C#: Use appropriate exceptions (`ArgumentNullException`, etc.) with descriptive messages
+
+### Naming Conventions
+- Assembly: Use descriptive prefixes (`loaderConst`, `loaderVar`, `loaderMessage`)
+- C#: Use PascalCase for classes, properties, methods; camelCase for local variables
+- C#: Use descriptive names that reflect the object's purpose in the VM memory system
+
