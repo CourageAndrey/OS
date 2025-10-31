@@ -1,39 +1,39 @@
-;#######################;
-;#                     #;
-;# Начальный загрузчик #;
-;#                     #;
-;#######################;
+;###############;
+;#             #;
+;# Boot Loader #;
+;#             #;
+;###############;
 	StartAddress equ 0x7C00
 org StartAddress
 	jmp word BootLoaderEntry
 
 ;=============;
-;= Константы =;
+;= Constants =;
 ;=============;
-	 ; ! Так как этот файл собирается первым - строку с включением BIOS.asm комментировать не нужно.
+	 ; ! This file must be first in the include chain - otherwise constants from BIOS.asm won't be available.
 	 include "BIOS.asm"
 
-	 loaderConstSectorPerTrackEnhanced	equ 0xFF	; значение (количество секторов на дорожку), указывающее на то, что чтение стоит осуществлять с помощью Enhanced Disk Service, а не посекторно
-	 loaderConstSectorsToRead			equ 0x01	; количество секторов, читаемое за один раз
-	 loaderConstSectorsReadAttempt		equ 0x03	; количество попыток чтения сектора
-	 loaderConstSectorsOfBootLoader		equ 2		; ! количество секторов, следующих за загрузчиком = CEIL(РазмерБинарникаОстальногоКода / РазмерСектора)
-	 loaderConstDiskSegmentMask			equ 111111b	; маска для определения количества секторов на дорожку
-	 loaderConstDiskStructureAddress	equ 0x600	; адрес в памяти, в который будут выгружаться данные о диске (выбран по желанию левой пятки)
+	 loaderConstSectorPerTrackEnhanced	equ 0xFF	; marker value (sectors per track), indicating that disk will be read using Enhanced Disk Service, not legacy mode
+	 loaderConstSectorsToRead			equ 0x01	; number of sectors to read at once
+	 loaderConstSectorsReadAttempt		equ 0x03	; number of read attempts for each sector
+	 loaderConstSectorsOfBootLoader		equ 2		; ! number of sectors occupied by bootloader = CEIL(bootloader_size_in_bytes / sector_size_in_bytes)
+	 loaderConstDiskSegmentMask			equ 111111b	; mask to extract sector count per track
+	 loaderConstDiskStructureAddress	equ 0x600	; memory address where disk structure will be placed (must be before boot sector start)
 
-	 ; длины выводимых сообщений
-	 loaderMessageSuccessfullLength 	 equ loaderMessageSuccessfullEnd - loaderMessageSuccessfull
-	 loaderMessageDiskErrorLength		 equ loaderMessageDiskErrorEnd - loaderMessageDiskError
-	 loaderMessageDiskEnhancedEnabledLength  equ loaderMessageDiskEnhancedEnabledEnd - loaderMessageDiskEnhancedEnabled
+	 ; message string lengths
+	 loaderMessageSuccessfullLength 		 equ loaderMessageSuccessfullEnd - loaderMessageSuccessfull
+	 loaderMessageDiskErrorLength			 equ loaderMessageDiskErrorEnd - loaderMessageDiskError
+	 loaderMessageDiskEnhancedEnabledLength	 equ loaderMessageDiskEnhancedEnabledEnd - loaderMessageDiskEnhancedEnabled
 	 loaderMessageDiskEnhancedDisabledLength equ loaderMessageDiskEnhancedDisabledEnd - loaderMessageDiskEnhancedDisabled
 
-;==========;
-;= Данные =;
-;==========;
-	 loaderVarDiskId			db ? ; идентификатор диска, с которого осуществляется загрузка
-	 loaderVarSectorPerTrack	dw ? ; количество секторов на дорожке -//-
-	 loaderVarHeadCount			db ? ; количество головок -//-
-	 loaderVarDiskAddressPacket	EddPacket32 ; пакет Enhanced Disk Service, описывающий диск, с которого осуществляется загрузка
-	 ; используемые текстовые строки
+;========;
+;= Data =;
+;========;
+	 loaderVarDiskId			db ? ; ID of the disk from which boot is performed
+	 loaderVarSectorPerTrack	dw ? ; number of sectors per track for the same disk
+	 loaderVarHeadCount			db ? ; number of heads for the same disk
+	 loaderVarDiskAddressPacket	EddPacket32 ; Enhanced Disk Service packet, describing the disk from which boot is performed
+	 ; predefined text messages
 	 loaderMessageSuccessfull db 'Disk reading has been completed.'
 	 loaderMessageSuccessfullEnd:
 	 loaderMessageDiskError db 'Error: disk reading has failed! Press any key for reboot...'
@@ -43,18 +43,19 @@ org StartAddress
 	 loaderMessageDiskEnhancedDisabled db 'Enhanced disk functions are disabled.'
 	 loaderMessageDiskEnhancedDisabledEnd:
 
-;================;
-;= Подпрограммы =;
-;================;
-;----------------;
-;- Перезагрузка -;
-;----------------;
+;==============;
+;= Procedures =;
+;==============;
+
+;--------------;
+;- Reboot PC  -;
+;--------------;
 loaderProcReboot:
 	jmp RebootAddress:0
 
-;-------------------------------;
-;- Чтение символа с клавиатуры -;
-;-------------------------------;
+;------------------------------;
+;- Wait for key press         -;
+;------------------------------;
 loaderProcReadKey:
 	push ax
 	mov ah, FunctionKeyboardReadkey
@@ -63,20 +64,20 @@ loaderProcReadKey:
 	ret
 
 ;----------------------------;
-;------- Вывод строки -------;
-; * DS:SI - адрес строки	-;
-; * CX - длина строки		-;
-; * DI - смещение символа	-;
-; * AH - цвет				-;
+;- Write string             -;
+; * DS:SI - string address  -;
+; * CX - string length      -;
+; * DI - screen offset      -;
+; * AH - color              -;
 ;----------------------------;
 loaderProcWriteString:
 	push ax bx cx es di si
 
-	; установка адреса видеопамяти
+	; setup video memory segment
 	mov bx, VideoMemoryAddressReal
 	mov es, bx
 
-	; посимвольный вывод
+	; output the string
 	@@:
 		test cx, cx
 		jz @f
@@ -89,37 +90,37 @@ loaderProcWriteString:
 	ret
 
 ;----------------------------;
-;------ Чтение сектора ------;
-; * DX:AX - номер сектора	-;
-; * ES:DI - куда читать		-;
+;- Load disk sector         -;
+; * DX:AX - sector number   -;
+; * ES:DI - destination buf -;
 ;----------------------------;
 loaderLoadSector:
-	; проверка на наличие рабочего Enhanced Disk Service
+	; check if Enhanced Disk Service is available
 	cmp byte[loaderVarSectorPerTrack], loaderConstSectorPerTrackEnhanced
 	je @loadSectorEx
 
 	push ax bx cx dx si
 	div [loaderVarSectorPerTrack]
-	mov cl, dl ; остаток = номер сектора
-	inc cl ; сектора, в отличии от всего остального, отсчитываются от единицы
+	mov cl, dl ; remainder = sector number
+	inc cl ; sectors we want to load are numbered starting from one
 	div [loaderVarHeadCount]
-	mov dh, ah ; остаток = номер головки
-	mov ch, al ; частное = номер дорожки
+	mov dh, ah ; remainder = head number
+	mov ch, al ; quotient = track number
 	mov dl, [loaderVarDiskId]
-	mov bx, di ; сегментная часть и так в ES
+	mov bx, di ; destination address is in DI and ES
 	mov al, loaderConstSectorsToRead
 	mov si, loaderConstSectorsReadAttempt
 
 	@@:
 		mov ah, FunctionDiskRead
-		int InterruptDiskIo ; попытка чтения
-		jnc @f ; всё хорошо => выход из подпрограммы
+		int InterruptDiskIo ; try to read
+		jnc @f ; no error => exit from retry loop
 		mov ah, FunctionDiskReset
-		int InterruptDiskIo ; сброс диска
+		int InterruptDiskIo ; reset disk
 		dec si
-		jnz @b ; попытаться ещё несколько раз
+		jnz @b ; repeat for remaining attempts
 
-	; ошибка - закончились попытки чтения
+	; error - cannot read sector
 	jmp @showError
 
 	@@:
@@ -139,22 +140,22 @@ loaderLoadSector:
 
 		mov ah, FunctionDiskReadEnhanced
 		mov dl, [loaderVarDiskId]
-		mov si, loaderConstDiskStructureAddress ; Начальный адрес структуры
+		mov si, loaderConstDiskStructureAddress ; packet address
 		int InterruptDiskIo
-		jc @showError ; для HDD и USB нет необходимости производить многократные попытки чтения
+		jc @showError ; for HDD and USB this rarely fails but we still check for errors
 		pop si dx ax
 	ret
 
 ;===============;
-;= Точка входа =;
+;= Entry Point =;
 ;===============;
 BootLoaderEntry:
-	; установка требуемого видеорежима
+	; setup video adapter
 	mov ah, FunctionVideoSetMode
 	mov al, VideoModeTextColor_80_25
 	int InterruptVideo
 
-	; настройка сегментных регистров
+	; setup segment registers
 	cli
 	jmp 0:@f
 	@@:
@@ -164,23 +165,23 @@ BootLoaderEntry:
 	mov sp, $$
 	sti
 
-	;  чтение свойств загрузочного диска
+	; save boot disk ID
 	mov [loaderVarDiskId], dl
 
-	; попытка включения расширенного сервиса
+	; try to use enhanced disk functions
 	mov ah, FunctionDiskCheckEnhanced
 	mov bh, BootSignatureByte0
 	mov bl, BootSignatureByte1
 	int InterruptDiskIo
-	jc @f ; дисковый сервис недоступен -> старый механизм определения параметров
+	jc @f ; enhanced mode not available -> use legacy CHS mode
 	mov byte[loaderVarSectorPerTrack], loaderConstSectorPerTrackEnhanced
-	jmp @@diskRead ; пропускаем старое определение параметров
+	jmp @@diskRead ; enhanced mode is available
 
-	@@: ; старая процедура чтения параметров (для FDD)
+	@@: ; get disk parameters in legacy mode (for FDD)
 		mov ah, ColorForeYellow
 		mov cx, loaderMessageDiskEnhancedDisabledLength
 		mov si, loaderMessageDiskEnhancedDisabled
-		xor di, di ; начало первой строки
+		xor di, di ; first line of screen
 		call loaderProcWriteString
 
 		mov ah, FunctionDiskParams
@@ -188,12 +189,12 @@ BootLoaderEntry:
 		int InterruptDiskIo
 		pop es
 		jc @showError
-		inc dh ; потому что отсчёт номера головки начинается от нуля
+		inc dh ; because BIOS returns max head index minus one
 		mov [loaderVarHeadCount], dh
-		and cx, loaderConstDiskSegmentMask ; нужны только 6 младших бит CX
+		and cx, loaderConstDiskSegmentMask ; keep only lower 6 bits of CX
 		mov [loaderVarSectorPerTrack], cx
 
-	; считывание с помощью расширенных функиций
+	; proceed to reading remaining sectors
 	@@diskRead:
 		mov ah, ColorForeLime
 		mov cx, loaderMessageDiskEnhancedEnabledLength
@@ -215,28 +216,28 @@ BootLoaderEntry:
 		mov ah, ColorForeLime
 		mov cx, loaderMessageSuccessfullLength
 		mov si, loaderMessageSuccessfull
-		mov di, 80*2*1 ; начало второй строки
+		mov di, 80*2*1 ; second line of screen
 		call loaderProcWriteString
 
 		jmp ProtectedModeEntry
 
-	; вывод сообщения об дисковых ошибках
+	; show error message when disk reading fails
 	@showError:
 		mov ah, ColorForeRed
 		mov cx, loaderMessageDiskErrorLength
 		mov si, loaderMessageDiskError
-		mov di, 80*2*1 ; начало второй строки
+		mov di, 80*2*1 ; second line of screen
 		call loaderProcWriteString
 
-	; ожидание финального нажатия клавиши
+	; wait for any key press
 	@readKey:
 	call loaderProcReadKey
 
-	; перезагрузка
+	; reboot
 	jmp loaderProcReboot
 
 ;============================;
-;= Выравнивание и сигнатура =;
+;= Boot Signature & Padding =;
 ;============================;
 rb (SectorLength - BootSignatureLength) - ($ - $$)
 db BootSignatureByte0, BootSignatureByte1

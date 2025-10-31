@@ -1,11 +1,11 @@
-;###################################;
-;#                                 #;
-;# Переход в режим длинных адресов #;
-;#                                 #;
-;###################################;
+;############################;
+;#                          #;
+;# Enter Long Mode (64-bit) #;
+;#                          #;
+;############################;
 
 ;=============;
-;= Константы =;
+;= Constants =;
 ;=============;
 	longModeSelectorCode	equ SegmentDescriptorLength*3
 	longModeSelectorData	equ SegmentDescriptorLength*4
@@ -23,7 +23,7 @@
 	bitPDE_PS			equ 010000000b
 
 ;===============;
-;= Точка входа =;
+;= Entry Point =;
 ;===============;
 	mov eax, cr4
 	bts eax, bitCR4_PAE
@@ -50,10 +50,10 @@
 
 	jmp longModeSelectorCode:LongModeEntry
 
-use64 ; весь дальнейший код - 64x-разрядный
+use64 ; all following code is 64-bit
 
 LongModeEntry:
-	; перезагрузка всех сегментных регистров
+	; load all segment registers
 	mov ax, longModeSelectorData
 	mov ds, ax
 	mov es, ax
@@ -62,7 +62,7 @@ LongModeEntry:
 	;mov ax, longModeSelectorStack
 	;mov ss, ax
 
-	; предварительная очистка всех регистров
+	; clear all general-purpose registers
 	xor rax, rax
 	mov rbx, rax
 	mov rcx, rax

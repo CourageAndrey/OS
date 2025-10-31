@@ -1,17 +1,17 @@
-;##############################;
-;#                            #;
-;# Переход в защищённый режим #;
-;#                            #;
-;##############################;
+;########################;
+;#                      #;
+;# Enter Protected Mode #;
+;#                      #;
+;########################;
 
 ;=============;
-;= Константы =;
+;= Constants =;
 ;=============;
-	; !раскомментировать эту строку при компиляции этого файла отдельно от остальных
+	; ! Not duplicating definitions because by this point BIOS.asm is already included
 	; include "BIOS.asm"
 
-	protectedModeStackBaseAddress	equ 0x8000 ; начальный адрес памяти стека
-	protectedModeCodeBaseAddress	equ 0x100 ; начальный адрес памяти кода
+	protectedModeStackBaseAddress	equ 0x8000 ; base address of stack segment
+	protectedModeCodeBaseAddress	equ 0x100 ; base address of code segment
 	protectedModeCodeSize			equ protectedModeCodeEnd - protectedModeCodeBaseAddress
 
 	protectedModeSelectorCode32	equ 0x08
@@ -27,9 +27,9 @@
 	messageProtectedModeEnteredEnd:
 
 
-;===========;
-;= Макросы =;
-;===========;
+;==========;
+;= Macros =;
+;==========;
 macro defineCodeDescriptor32 baseAddress, sizeLimit
 {
 	DefineSegmentDescriptor32 baseAddress, sizeLimit, DescriptorBitGranularityPage, DescriptorBitSize32, 0, 0, DescriptorBitPresent, DescriptorPrivilege0, DescriptorObjectSystem, DescriptorTypeCode, 0, DescriptorCodeReadable, 0
@@ -46,46 +46,46 @@ macro defineStackDescriptor32 baseAddress, sizeLimit
 }
 
 ;===============;
-;= Точка входа =;
+;= Entry Point =;
 ;===============;
 ProtectedModeEntry:
-	; открытие линии A20  (для включения 32-битной адресации)
+	; enable A20 gate (for 32-bit addressing)
 	in al, protectedConstControlRegisterPort92
 	or al, protectedConstBitA20Enable
 	out protectedConstControlRegisterPort92, al
 
-	; вычисление линейного адреса точки входа в защищённый режим
+	; calculate absolute address of entry point for protected mode
 	xor eax, eax
 	mov ax, cs
 	shl eax, 4
 	add eax, protectedModeEntryPoint
 	mov [protectedModeEntryOffset], eax ; protectedModeEntryOffset = CS * 16 + protectedModeEntryPoint
 
-	; вычисление линейного адреса GDT
+	; calculate absolute address of GDT
 	xor eax, eax
 	mov ax, cs
 	shl eax, 4
 	add eax, GDT
 	mov dword [GDTR + 2], eax
-	lgdt fword [GDTR] ; загрузка регистра GDTR
+	lgdt fword [GDTR] ; load GDTR register
 
-	; запрет прерываний
+	; disable interrupts
 	cli
-	; отключение прерываний от часов реального времени
+	; disable interrupts from real-time clock
 	in al, protectedConstRealTimeClockPort
 	or al, protectedConstBitsRtcDisable
 	out protectedConstRealTimeClockPort, al
-	; включение защищённого режима через регистр CR0
+	; set protected mode bit in CR0
 	mov eax, cr0
 	or al, protectedConstBitProtectedMode
 	mov cr0, eax
 
-	; загрузка нового селектора в CS
+	; perform far jump to load CS
 	db 0x66, 0xEA ; JMP FAR
 	protectedModeEntryOffset dd protectedModeEntryPoint
 	dw protectedModeSelectorCode32
 
-	; глобальная таблица дескрипторов
+	; Global Descriptor Table
 	align 8
 GDT:
 	protectedDescriptorNull		db SegmentDescriptorLength dup (0)
@@ -99,9 +99,9 @@ label GDTR fword
 	dw GDT_size-1
 	dd ?
 
-use32 ; весь дальнейший код - 32x-разрядный
+use32 ; all following code is 32-bit
 protectedModeEntryPoint:
-	; загрузка сегментных регистров созданными селекторами
+	; load all segment registers for protected mode
 	mov ax, protectedModeSelectorData
 	mov ds, ax
 	mov es, ax
@@ -110,26 +110,25 @@ protectedModeEntryPoint:
 
 	call delta
 	delta:
-	pop ebx ; в EBX выталкивается адрес строки кода call delta
-	add ebx, protectedModeCodeStart-delta ; и прибавляется разница, чтобы EBX смотрел на ProtectedModeCodeStart
+	pop ebx ; EBX now contains address of "call delta" instruction
+	add ebx, protectedModeCodeStart-delta ; adjust so EBX points to ProtectedModeCodeStart
 
-	mov esi, ebx ; из памяти по адресу ProtectedModeCodeStart (уже загружена)
-	mov edi, protectedModeCodeBaseAddress ; в память по адресу ProtectedModeCodeBaseAddress (где будет выполняться код)
-	mov ecx, protectedModeCodeSize ; скопировать весь код между метками ProtectedModeCodeEnd и ProtectedModeCodeStart
+	mov esi, ebx ; source is ProtectedModeCodeStart (its current location)
+	mov edi, protectedModeCodeBaseAddress ; destination is ProtectedModeCodeBaseAddress (where we want to relocate code)
+	mov ecx, protectedModeCodeSize ; copy entire block between ProtectedModeCodeEnd and ProtectedModeCodeStart
 	rep movsb
 
 	mov eax, protectedModeCodeBaseAddress
 	jmp eax
 
-;------------------------;
-;----- Вывод строки -----;
-;------------------------;
-; * ESI - адрес строки	-;
-; * ECX - длина строки	-;
-; * BL - координата X	-;
-; * BH - координата Y	-;
-; * AH - цвет			-;
-;------------------------;
+;----------------------------;
+;- Write string             -;
+; * ESI - string address    -;
+; * ECX - string length     -;
+; * BL - X coordinate       -;
+; * BH - Y coordinate       -;
+; * AH - color              -;
+;----------------------------;
 protectedProcWriteString:
 	push eax
 	push ebx
@@ -137,7 +136,7 @@ protectedProcWriteString:
 	push edi
 	push esi
 
-	; установка адреса видеопамяти
+	; calculate video memory address
 	mov edi, eax
 	mov al, 80
 	mul bh
@@ -147,7 +146,7 @@ protectedProcWriteString:
 	add eax, VideoMemoryAddressProtected
 	xchg edi, eax
 
-	; посимвольный вывод
+	; output the string
 	@@:
 		test ecx, ecx
 		jz @f
@@ -166,11 +165,11 @@ protectedProcWriteString:
 
 protectedModeCodeStart:
 org protectedModeCodeBaseAddress
-	; сообщение о входе в защищённый режим
+	; display message that we're in protected mode
 	mov ah, ColorForeLime
 	mov esi, messageProtectedModeEntered
 	mov ecx, messageProtectedModeEnteredEnd-messageProtectedModeEntered
-	mov ebx, 0x0200 ; начало третьей строки
+	mov ebx, 0x0200 ; third line of screen
 	call protectedProcWriteString
 
 	include "LongMode.asm"

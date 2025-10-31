@@ -1,20 +1,20 @@
 ;################;
 ;#              #;
-;# Тестовый код #;
+;# User Code    #;
 ;#              #;
 ;################;
-	; !раскомментировать эти строки при компил€ции этого файла отдельно от остальных
+	; ! Not duplicating definitions because by this point BIOS.asm is already included
 	; include "BIOS.asm"
 	; use64
 
-	; сообщение о входе в режим длинных адресов
+	; display message that we're in long mode
 	mov ah, ColorForeLime
 	mov rsi, messageLongModeEntered
 	mov rcx, messageLongModeEnteredEnd-messageLongModeEntered
-	mov rbx, 0x0300 ; начало четвёртой строки
+	mov rbx, 0x0300 ; fourth line of screen
 	call procWriteString
 
-	; зацикливание
+	; infinite loop
 	jmp $
 
 messageLongModeEntered db "Long mode is on."
