@@ -45,6 +45,11 @@ namespace VirtualMachine.Core
 			{
 				throw new System.ArgumentException("Field offset has to be positive.");
 			}
+
+			if (offset > ((MemoryAddress) ReferencedDataSize))
+			{
+				throw new System.ArgumentException("Field offset is too big.");
+			}
 		}
 
 		protected internal ObjectT GetFieldValue<ObjectT>(MemoryAddress fieldOffset)
