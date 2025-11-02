@@ -220,9 +220,9 @@ org protectedModeCodeBaseAddress
 
 	mov esi, messageCpuidNotSupported
 	mov ecx, messageCpuidNotSupportedEnd - messageCpuidNotSupported
+	mov ebx, 0x0300 ; fourth line of screen
 @protectedModeError:
 	mov ah, ColorForeRed
-	mov ebx, 0x0300 ; fourth line of screen
 	call protectedProcWriteString
 
 	cli
@@ -237,6 +237,7 @@ org protectedModeCodeBaseAddress
 
 	mov esi, messageCpuidExtendedNotSupported
 	mov ecx, messageCpuidExtendedNotSupportedEnd - messageCpuidNotSupported
+	mov ebx, 0x0500 ; fifth line of screen
 	jmp @protectedModeError
 
 	@cpuidExtendedSupported:
