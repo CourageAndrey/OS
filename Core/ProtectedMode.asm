@@ -29,6 +29,8 @@
 	messageCpuidSupportedEnd:
 	messageCpuidNotSupported db "CPUID is not supported. Exiting..."
 	messageCpuidNotSupportedEnd:
+	messageCpuidExtendedSupported db "Extended CPUID instruction are supported."
+	messageCpuidExtendedSupportedEnd:
 	messageCpuidExtendedNotSupported db "Extended CPUID instruction are not supported. Exiting..."
 	messageCpuidExtendedNotSupportedEnd:
 	messageLongModeNotSupported db "x64 mode is not supported. Exiting..."
@@ -193,7 +195,7 @@ org protectedModeCodeBaseAddress
 	pop ebx
 	pop eax
 
-	; display message that CPUID is supported - display message
+	; display message that CPUID is supported
 	mov ah, ColorForeLime
 	mov esi, messageCpuidSupported
 	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
@@ -230,19 +232,25 @@ org protectedModeCodeBaseAddress
 
 	@cpuidSupported:
 	; check if extended CPUID functions are supported
-	mov eax, 0x80000000 ; check if extended functions are available
+	mov eax, 0x80000000
 	cpuid
 	cmp eax, 0x80000001
 	jnb @cpuidExtendedSupported
 
 	mov esi, messageCpuidExtendedNotSupported
-	mov ecx, messageCpuidExtendedNotSupportedEnd - messageCpuidNotSupported
-	mov ebx, 0x0500 ; fifth line of screen
+	mov ecx, messageCpuidExtendedNotSupportedEnd - messageCpuidExtendedNotSupported
+	mov ebx, 0x0400 ; fifth line of screen
 	jmp @protectedModeError
 
 	@cpuidExtendedSupported:
+	; display message that extended CPUID instructions are supported
+	mov ah, ColorForeLime
+	mov esi, messageCpuidExtendedSupported
+	mov ecx, messageCpuidExtendedSupportedEnd - messageCpuidExtendedSupported
+	mov ebx, 0x0400 ; fifth line of screen
+	call protectedProcWriteString
+
 	; check if long mode is supported
-	; Call CPUID with 0x80000001 to get extended processor features
 	mov eax, 0x80000001
 	cpuid
 	; Check bit 29 of EDX (LM bit) for Long Mode support
@@ -256,7 +264,7 @@ org protectedModeCodeBaseAddress
 	mov ah, ColorForeRed
 	mov esi, messageLongModeNotSupported
 	mov ecx, messageLongModeNotSupportedEnd - messageLongModeNotSupported
-	mov ebx, 0x0400 ; fifth line of screen
+	mov ebx, 0x0500 ; fifth line of screen
 	call protectedProcWriteString
 
 	cli
