@@ -251,7 +251,7 @@ org protectedModeCodeBaseAddress
 	cpuid ; Execute CPUID - if unsupported would cause #UD, but that won't happen on Pentium+
 
 	mov ebx, 0x0300 ; fourth line of screen
-	mov bl, messageCheckCpuidEnd - messageCheckCpuid
+	mov bl, messageCheckCpuidEnd - messageCheckCpuid + 1
 	call protectedProcOk
 
 	;@cpuidSupported:
@@ -269,12 +269,12 @@ org protectedModeCodeBaseAddress
 	jnb @cpuidExtendedSupported
 
 	mov ebx, 0x0400 ; fifth line of screen
-	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
+	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended + 1
 	jmp protectedProcFail
 
 	@cpuidExtendedSupported:
 	mov ebx, 0x0400 ; fifth line of screen
-	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
+	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended + 1
 	call protectedProcOk
 
 	; check if long mode is supported
@@ -292,12 +292,12 @@ org protectedModeCodeBaseAddress
 	jnz @longModeSupported ; if bit is clear, Long Mode not supported
 
 	mov ebx, 0x0500 ; sixth line of screen
-	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
+	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported + 1
 	jmp protectedProcFail
 
 	@longModeSupported:
 	mov ebx, 0x0500 ; sixth line of screen
-	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
+	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported + 1
 	call protectedProcOk
 
 	cli
