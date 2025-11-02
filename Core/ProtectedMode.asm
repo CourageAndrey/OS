@@ -29,6 +29,8 @@
 	messageCpuidSupportedEnd:
 	messageCpuidNotSupported db "CPUID is not supported. Exiting..."
 	messageCpuidNotSupportedEnd:
+	messageLongModeNotSupported db "x64 mode is not supported. Exiting..."
+	messageLongModeNotSupportedEnd:
 
 ;==========;
 ;= Macros =;
@@ -231,6 +233,36 @@ org protectedModeCodeBaseAddress
 	jmp $ ; HALT
 
 	@cpuidSupported:
+	; check if long mode is supported
+	mov eax, 0x80000000 ; check if extended functions are available
+	cpuid
+	cmp eax, 0x80000001
+	jb @longModeNotSupported
+
+	; Call CPUID with 0x80000001 to get extended processor features
+	mov eax, 0x80000001
+	cpuid
+	; Check bit 29 of EDX (LM bit) for Long Mode support
+	test edx, (1 shl 29)
+	jz @longModeNotSupported ; if bit is clear, Long Mode not supported
+
+	; Long Mode is supported, continue execution
+	jmp @longModeSupported
+
+	@longModeNotSupported:
+	mov ah, ColorForeRed
+	mov esi, messageLongModeNotSupported
+	mov ecx, messageLongModeNotSupportedEnd - messageLongModeNotSupported
+	mov ebx, 0x0400 ; fifth line of screen
+	call protectedProcWriteString
+
+	cli
+	jmp $ ; HALT
+
+	@longModeSupported:
+
+	cli
+	jmp $ ; HALT
 
 	include "LongMode.asm"
 protectedModeCodeEnd:
