@@ -214,18 +214,12 @@ org protectedModeCodeBaseAddress
 
 	; check result
 	test eax, eax
-	jz @cpuidNotSupported ; if bit didn't change, CPUID not supported
+	jnz @cpuidSupported ; if bit didn't change, CPUID not supported
 
-	; CPUID is supported
-	mov ah, ColorForeLime
-	mov esi, messageCpuidSupported
-	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
-	jmp @cpuidSupported
-
-	@cpuidNotSupported:
-	mov ah, ColorForeRed
 	mov esi, messageCpuidNotSupported
 	mov ecx, messageCpuidNotSupportedEnd - messageCpuidNotSupported
+@protectedModeError:
+	mov ah, ColorForeRed
 	mov ebx, 0x0300 ; fourth line of screen
 	call protectedProcWriteString
 
