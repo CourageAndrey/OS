@@ -25,16 +25,16 @@
 
 	messageProtectedModeEntered db "Protected mode is on."
 	messageProtectedModeEnteredEnd:
-	messageCpuidSupported db "CPUID is supported."
-	messageCpuidSupportedEnd:
-	messageCpuidNotSupported db "CPUID is not supported. Exiting..."
-	messageCpuidNotSupportedEnd:
-	messageCpuidExtendedSupported db "Extended CPUID instruction are supported."
-	messageCpuidExtendedSupportedEnd:
-	messageCpuidExtendedNotSupported db "Extended CPUID instruction are not supported. Exiting..."
-	messageCpuidExtendedNotSupportedEnd:
-	messageLongModeNotSupported db "x64 mode is not supported. Exiting..."
-	messageLongModeNotSupportedEnd:
+	messagePmOk db "OK"
+	messagePmOkEnd:
+	messagePmFail sb "FAIL!"
+	messagePmFailEnd:
+	messageCheckCpuid db "Check if CPUID is supported..."
+	messageCheckCpuidSupportedEnd:
+	messageCheckCpuidExtended db "Check if extended CPUID instruction are supported..."
+	messageCheckCpuidExtendedEnd:
+	messageCheckLongModeSupported db "Check if x64 mode is supported..."
+	messageCheckLongModeSupportedEnd:
 
 ;==========;
 ;= Macros =;
