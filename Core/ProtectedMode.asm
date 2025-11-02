@@ -30,7 +30,7 @@
 	messagePmFail db "FAIL!"
 	messagePmFailEnd:
 	messageCheckCpuid db "Check if CPUID is supported..."
-	messageCheckCpuidSupportedEnd:
+	messageCheckCpuidEnd:
 	messageCheckCpuidExtended db "Check if extended CPUID instructions are supported..."
 	messageCheckCpuidExtendedEnd:
 	messageCheckLongModeSupported db "Check if x64 mode is supported..."
@@ -270,11 +270,11 @@ org protectedModeCodeBaseAddress
 
 	mov ebx, 0x0400 ; fifth line of screen
 	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
-	jmp @protectedProcFail
+	jmp protectedProcFail
 
 	@cpuidExtendedSupported:
-	mov ebx, 0x0400 ; fourth line of screen
-	mov bl, messageCheckCpuidEnd - messageCheckCpuid
+	mov ebx, 0x0400 ; fifth line of screen
+	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
 	call protectedProcOk
 
 	; check if long mode is supported
@@ -293,7 +293,7 @@ org protectedModeCodeBaseAddress
 
 	mov ebx, 0x0500 ; sixth line of screen
 	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
-	jmp @protectedProcFail
+	jmp protectedProcFail
 
 	@longModeSupported:
 	mov ebx, 0x0500 ; sixth line of screen
