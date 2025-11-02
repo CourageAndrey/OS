@@ -25,7 +25,10 @@
 
 	messageProtectedModeEntered db "Protected mode is on."
 	messageProtectedModeEnteredEnd:
-
+	messageCpuidSupported db "CPUID is supported."
+	messageCpuidSupportedEnd:
+	messageCpuidNotSupported db "CPUID is not supported. Exiting..."
+	messageCpuidNotSupportedEnd:
 
 ;==========;
 ;= Macros =;
@@ -171,6 +174,63 @@ org protectedModeCodeBaseAddress
 	mov ecx, messageProtectedModeEnteredEnd-messageProtectedModeEntered
 	mov ebx, 0x0200 ; third line of screen
 	call protectedProcWriteString
+
+	push eax
+	push ebx
+	push ecx
+	push edx
+
+	; execute CPUID with EAX=0 (request vendor string)
+	xor eax, eax
+	cpuid ; Execute CPUID - if unsupported would cause #UD, but that won't happen on Pentium+
+
+	pop edx
+	pop ecx
+	pop ebx
+	pop eax
+
+	; display message that CPUID is supported - display message
+	mov ah, ColorForeLime
+	mov esi, messageCpuidSupported
+	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
+	mov ebx, 0x0300 ; fourth line of screen
+	call protectedProcWriteString
+
+	; check if CPUID instruction is supported
+	pushfd				; push EFLAGS
+	pop eax				; pop into EAX
+	mov ebx, eax		; save original EFLAGS
+	xor eax, 0x200000	; flip bit 21 (ID bit)
+	push eax			; push modified EFLAGS
+	popfd				; pop back to EFLAGS
+	pushfd				; push EFLAGS again
+	pop eax				; pop back to EAX
+	xor eax, ebx		; compare with original
+	and eax, 0x200000	; check if bit 21 changed
+	push ebx			; restore original EFLAGS
+	popfd
+
+	; check result
+	test eax, eax
+	jz @cpuidNotSupported ; if bit didn't change, CPUID not supported
+
+	; CPUID is supported
+	mov ah, ColorForeLime
+	mov esi, messageCpuidSupported
+	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
+	jmp @cpuidSupported
+
+	@cpuidNotSupported:
+	mov ah, ColorForeRed
+	mov esi, messageCpuidNotSupported
+	mov ecx, messageCpuidNotSupportedEnd - messageCpuidNotSupported
+	mov ebx, 0x0300 ; fourth line of screen
+	call protectedProcWriteString
+
+	cli
+	jmp $ ; HALT
+
+	@cpuidSupported:
 
 	include "LongMode.asm"
 protectedModeCodeEnd:

@@ -11,7 +11,7 @@
 	mov ah, ColorForeLime
 	mov rsi, messageLongModeEntered
 	mov rcx, messageLongModeEnteredEnd-messageLongModeEntered
-	mov rbx, 0x0300 ; fourth line of screen
+	mov rbx, 0x0400 ; fifth line of screen
 	call procWriteString
 
 	; infinite loop
