@@ -181,6 +181,37 @@ org protectedModeCodeBaseAddress
 	mov ebx, 0x0200 ; third line of screen
 	call protectedProcWriteString
 
+; Check below is commented because this approach is not supported by Bochs emulator.
+; So, instead of correct logiv we just try to call CPUID explicitly.
+	;; check if CPUID instruction is supported
+	;pushfd				; push EFLAGS
+	;pop eax				; pop into EAX
+	;mov ebx, eax		; save original EFLAGS
+	;xor eax, 0x200000	; flip bit 21 (ID bit)
+	;push eax			; push modified EFLAGS
+	;popfd				; pop back to EFLAGS
+	;pushfd				; push EFLAGS again
+	;pop eax				; pop back to EAX
+	;xor eax, ebx		; compare with original
+	;and eax, 0x200000	; check if bit 21 changed
+	;push ebx			; restore original EFLAGS
+	;popfd
+
+	;; check result
+	;test eax, eax
+	;jnz @cpuidSupported ; if bit didn't change, CPUID not supported
+
+	;mov esi, messageCpuidNotSupported
+	;mov ecx, messageCpuidNotSupportedEnd - messageCpuidNotSupported
+	;mov ebx, 0x0300 ; fourth line of screen
+;@protectedModeError:
+	;mov ah, ColorForeRed
+	;call protectedProcWriteString
+
+	;cli
+	;jmp $ ; HALT
+; SIMPLIFIED APPROACH BELOW CAN CAUSE ERROR IF CPUID IS NOT SUPPORTED
+
 	; execute CPUID with EAX=0 (request vendor string)
 	xor eax, eax
 	cpuid ; Execute CPUID - if unsupported would cause #UD, but that won't happen on Pentium+
@@ -191,34 +222,6 @@ org protectedModeCodeBaseAddress
 	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
 	mov ebx, 0x0300 ; fourth line of screen
 	call protectedProcWriteString
-
-	; check if CPUID instruction is supported
-	pushfd				; push EFLAGS
-	pop eax				; pop into EAX
-	mov ebx, eax		; save original EFLAGS
-	xor eax, 0x200000	; flip bit 21 (ID bit)
-	push eax			; push modified EFLAGS
-	popfd				; pop back to EFLAGS
-	pushfd				; push EFLAGS again
-	pop eax				; pop back to EAX
-	xor eax, ebx		; compare with original
-	and eax, 0x200000	; check if bit 21 changed
-	push ebx			; restore original EFLAGS
-	popfd
-
-	; check result
-	test eax, eax
-	jnz @cpuidSupported ; if bit didn't change, CPUID not supported
-
-	mov esi, messageCpuidNotSupported
-	mov ecx, messageCpuidNotSupportedEnd - messageCpuidNotSupported
-	mov ebx, 0x0300 ; fourth line of screen
-@protectedModeError:
-	mov ah, ColorForeRed
-	call protectedProcWriteString
-
-	cli
-	jmp $ ; HALT
 
 	@cpuidSupported:
 	; check if extended CPUID functions are supported
