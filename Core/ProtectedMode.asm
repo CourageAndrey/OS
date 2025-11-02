@@ -264,7 +264,7 @@ org protectedModeCodeBaseAddress
 	mov ah, ColorForeRed
 	mov esi, messageLongModeNotSupported
 	mov ecx, messageLongModeNotSupportedEnd - messageLongModeNotSupported
-	mov ebx, 0x0500 ; fifth line of screen
+	mov ebx, 0x0500 ; sixth line of screen
 	call protectedProcWriteString
 
 	cli
