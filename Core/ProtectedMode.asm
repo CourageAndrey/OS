@@ -27,11 +27,11 @@
 	messageProtectedModeEnteredEnd:
 	messagePmOk db "OK"
 	messagePmOkEnd:
-	messagePmFail sb "FAIL!"
+	messagePmFail db "FAIL!"
 	messagePmFailEnd:
 	messageCheckCpuid db "Check if CPUID is supported..."
 	messageCheckCpuidSupportedEnd:
-	messageCheckCpuidExtended db "Check if extended CPUID instruction are supported..."
+	messageCheckCpuidExtended db "Check if extended CPUID instructions are supported..."
 	messageCheckCpuidExtendedEnd:
 	messageCheckLongModeSupported db "Check if x64 mode is supported..."
 	messageCheckLongModeSupportedEnd:
@@ -172,6 +172,33 @@ protectedProcWriteString:
 	pop eax
 	ret
 
+;----------------------;
+;- Write OK           -;
+; * BL - X coordinate -;
+; * BH - Y coordinate -;
+;----------------------;
+protectedProcOk:
+	mov ah, ColorForeLime
+	mov esi, messagePmOk
+	mov ecx, messagePmOkEnd - messagePmOk
+	call protectedProcWriteString
+
+	ret
+
+;----------------------;
+;- Write FAIL         -;
+; * BL - X coordinate -;
+; * BH - Y coordinate -;
+;----------------------;
+protectedProcFail:
+	mov ah, ColorForeRed
+	mov esi, messagePmFail
+	mov ecx, messagePmFailEnd - messagePmFail
+	call protectedProcWriteString
+
+	cli
+	jmp $ ; HALT
+
 protectedModeCodeStart:
 org protectedModeCodeBaseAddress
 	; display message that we're in protected mode
@@ -210,60 +237,68 @@ org protectedModeCodeBaseAddress
 
 	;cli
 	;jmp $ ; HALT
-; SIMPLIFIED APPROACH BELOW CAN CAUSE ERROR IF CPUID IS NOT SUPPORTED
+	; display message about check
+	mov ah, ColorForeWhite
+	mov esi, messageCheckCpuid
+	mov ecx, messageCheckCpuidEnd - messageCheckCpuid
+	mov ebx, 0x0300 ; fourth line of screen
+	call protectedProcWriteString
+
+; SIMPLIFIED APPROACH BELOW CAN CAUSE ERROR IF CPUID IS NOT SUPPORTED!
 
 	; execute CPUID with EAX=0 (request vendor string)
 	xor eax, eax
 	cpuid ; Execute CPUID - if unsupported would cause #UD, but that won't happen on Pentium+
 
-	; display message that CPUID is supported
-	mov ah, ColorForeLime
-	mov esi, messageCpuidSupported
-	mov ecx, messageCpuidSupportedEnd - messageCpuidSupported
 	mov ebx, 0x0300 ; fourth line of screen
+	mov bl, messageCheckCpuidEnd - messageCheckCpuid
+	call protectedProcOk
+
+	;@cpuidSupported:
+	; check if extended CPUID functions are supported
+	; display message about check
+	mov ah, ColorForeWhite
+	mov esi, messageCheckCpuidExtended
+	mov ecx, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
+	mov ebx, 0x0400 ; fifth line of screen
 	call protectedProcWriteString
 
-	@cpuidSupported:
-	; check if extended CPUID functions are supported
 	mov eax, 0x80000000
 	cpuid
 	cmp eax, 0x80000001
 	jnb @cpuidExtendedSupported
 
-	mov esi, messageCpuidExtendedNotSupported
-	mov ecx, messageCpuidExtendedNotSupportedEnd - messageCpuidExtendedNotSupported
 	mov ebx, 0x0400 ; fifth line of screen
-	jmp @protectedModeError
+	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended
+	jmp @protectedProcFail
 
 	@cpuidExtendedSupported:
-	; display message that extended CPUID instructions are supported
-	mov ah, ColorForeLime
-	mov esi, messageCpuidExtendedSupported
-	mov ecx, messageCpuidExtendedSupportedEnd - messageCpuidExtendedSupported
-	mov ebx, 0x0400 ; fifth line of screen
-	call protectedProcWriteString
+	mov ebx, 0x0400 ; fourth line of screen
+	mov bl, messageCheckCpuidEnd - messageCheckCpuid
+	call protectedProcOk
 
 	; check if long mode is supported
+	; display message about check
+	mov ah, ColorForeWhite
+	mov esi, messageCheckLongModeSupported
+	mov ecx, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
+	mov ebx, 0x0500 ; sixth line of screen
+	call protectedProcWriteString
+
 	mov eax, 0x80000001
 	cpuid
 	; Check bit 29 of EDX (LM bit) for Long Mode support
 	test edx, (1 shl 29)
-	jz @longModeNotSupported ; if bit is clear, Long Mode not supported
+	jnz @longModeSupported ; if bit is clear, Long Mode not supported
 
-	; Long Mode is supported, continue execution
-	jmp @longModeSupported
-
-	@longModeNotSupported:
-	mov ah, ColorForeRed
-	mov esi, messageLongModeNotSupported
-	mov ecx, messageLongModeNotSupportedEnd - messageLongModeNotSupported
 	mov ebx, 0x0500 ; sixth line of screen
-	call protectedProcWriteString
-
-	cli
-	jmp $ ; HALT
+	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
+	jmp @protectedProcFail
 
 	@longModeSupported:
+	mov ebx, 0x0500 ; sixth line of screen
+	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
+	call protectedProcOk
 
 	cli
 	jmp $ ; HALT
