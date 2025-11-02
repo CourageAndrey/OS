@@ -181,19 +181,9 @@ org protectedModeCodeBaseAddress
 	mov ebx, 0x0200 ; third line of screen
 	call protectedProcWriteString
 
-	push eax
-	push ebx
-	push ecx
-	push edx
-
 	; execute CPUID with EAX=0 (request vendor string)
 	xor eax, eax
 	cpuid ; Execute CPUID - if unsupported would cause #UD, but that won't happen on Pentium+
-
-	pop edx
-	pop ecx
-	pop ebx
-	pop eax
 
 	; display message that CPUID is supported
 	mov ah, ColorForeLime
