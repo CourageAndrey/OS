@@ -139,14 +139,9 @@ protectedModeEntryPoint:
 ; * AH - color              -;
 ;----------------------------;
 protectedProcWriteString:
-	push eax
-	push ebx
-	push ecx
-	push edi
-	push esi
-
 	; calculate video memory address
 	mov edi, eax
+	xor eax, eax
 	mov al, 80
 	mul bh
 	xor bh, bh
@@ -165,11 +160,6 @@ protectedProcWriteString:
 		jmp @b
 
 	@@:
-	pop esi
-	pop edi
-	pop ecx
-	pop ebx
-	pop eax
 	ret
 
 ;----------------------;
@@ -178,6 +168,7 @@ protectedProcWriteString:
 ; * BH - Y coordinate -;
 ;----------------------;
 protectedProcOk:
+	xor eax, eax
 	mov ah, ColorForeLime
 	mov esi, messagePmOk
 	mov ecx, messagePmOkEnd - messagePmOk
@@ -191,13 +182,13 @@ protectedProcOk:
 ; * BH - Y coordinate -;
 ;----------------------;
 protectedProcFail:
+	xor eax, eax
 	mov ah, ColorForeRed
 	mov esi, messagePmFail
 	mov ecx, messagePmFailEnd - messagePmFail
 	call protectedProcWriteString
 
-	cli
-	jmp $ ; HALT
+	ret
 
 protectedModeCodeStart:
 org protectedModeCodeBaseAddress
@@ -254,7 +245,7 @@ org protectedModeCodeBaseAddress
 	mov bl, messageCheckCpuidEnd - messageCheckCpuid + 1
 	call protectedProcOk
 
-	;@cpuidSupported:
+	@cpuidSupported:
 	; check if extended CPUID functions are supported
 	; display message about check
 	mov ah, ColorForeWhite
@@ -263,16 +254,16 @@ org protectedModeCodeBaseAddress
 	mov ebx, 0x0400 ; fifth line of screen
 	call protectedProcWriteString
 
-	mov eax, 0x80000000
-	cpuid
-	cmp eax, 0x80000001
-	jnb @cpuidExtendedSupported
+	;mov eax, 0x80000000
+	;cpuid
+	;cmp eax, 0x80000001
+	;jnb @cpuidExtendedSupported
 
 	mov ebx, 0x0400 ; fifth line of screen
-	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended + 1
-	jmp protectedProcFail
+	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended + 4
+	call protectedProcFail
 
-	@cpuidExtendedSupported:
+	;@cpuidExtendedSupported:
 	mov ebx, 0x0400 ; fifth line of screen
 	mov bl, messageCheckCpuidExtendedEnd - messageCheckCpuidExtended + 1
 	call protectedProcOk
@@ -282,21 +273,21 @@ org protectedModeCodeBaseAddress
 	mov ah, ColorForeWhite
 	mov esi, messageCheckLongModeSupported
 	mov ecx, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported
-	mov ebx, 0x0500 ; sixth line of screen
+	mov ebx, 0x0800 ; sixth line of screen
 	call protectedProcWriteString
 
-	mov eax, 0x80000001
-	cpuid
-	; Check bit 29 of EDX (LM bit) for Long Mode support
-	test edx, (1 shl 29)
-	jnz @longModeSupported ; if bit is clear, Long Mode not supported
+	;mov eax, 0x80000001
+	;cpuid
+	;; Check bit 29 of EDX (LM bit) for Long Mode support
+	;test edx, (1 shl 29)
+	;;jnz @longModeSupported ; if bit is clear, Long Mode not supported
 
-	mov ebx, 0x0500 ; sixth line of screen
-	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported + 1
-	jmp protectedProcFail
+	mov ebx, 0x0800 ; sixth line of screen
+	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported + 4
+	call protectedProcFail
 
 	@longModeSupported:
-	mov ebx, 0x0500 ; sixth line of screen
+	mov ebx, 0x0800 ; sixth line of screen
 	mov bl, messageCheckLongModeSupportedEnd - messageCheckLongModeSupported + 1
 	call protectedProcOk
 
